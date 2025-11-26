@@ -1,0 +1,174 @@
+---
+title: 📅 Offly
+description: Time off manager moderne et intuitif
+---
+
+import { Card, Tabs, TabItem, Steps } from '@astrojs/starlight/components';
+
+Offly est un time off manager moderne et intuitif pour gérer les congés de votre équipe.
+
+## Fonctionnalités
+
+- **Gestion des congés** : Demandes et approbations simplifiées
+- **Calendrier d'équipe** : Visualisez les absences en un coup d'œil
+- **Types de congés** : Congés payés, RTT, maladie, etc.
+- **Notifications** : Alertes par email et Slack
+- **Rapports** : Statistiques et exports
+
+## Installation
+
+### Via Helm
+
+```bash
+helm repo add bananaops https://charts.bananaops.tech
+helm repo update
+helm install offly bananaops/offly --namespace offly --create-namespace
+```
+
+### Via kubectl
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BananaOps/offly/main/deploy/kubernetes.yaml
+```
+
+## Démarrage Rapide
+
+<Steps>
+
+1. **Ajouter le repository Helm**
+   
+   ```bash
+   helm repo add bananaops https://charts.bananaops.tech
+   helm repo update
+   ```
+
+2. **Créer un fichier de configuration**
+   
+   ```yaml
+   # values.yaml
+   replicaCount: 2
+   
+   image:
+     repository: bananaops/offly
+     tag: "latest"
+   
+   ingress:
+     enabled: true
+     className: nginx
+     hosts:
+       - host: offly.example.com
+         paths:
+           - path: /
+             pathType: Prefix
+   
+   config:
+     company:
+       name: "Mon Entreprise"
+       workingDays: 5
+     
+     leaveTypes:
+       - name: "Congés payés"
+         days: 25
+       - name: "RTT"
+         days: 10
+   
+   notifications:
+     email:
+       enabled: true
+     slack:
+       enabled: true
+   ```
+
+3. **Installer avec Helm**
+   
+   ```bash
+   helm install offly bananaops/offly \
+     --values values.yaml \
+     --namespace offly \
+     --create-namespace
+   ```
+
+4. **Vérifier le déploiement**
+   
+   ```bash
+   kubectl get pods -n offly
+   kubectl get ingress -n offly
+   ```
+
+</Steps>
+
+## Configuration
+
+### Types de congés
+
+Configurez les types de congés selon vos besoins :
+
+```yaml
+leaveTypes:
+  - name: "Congés payés"
+    days: 25
+    color: "#4facfe"
+  - name: "RTT"
+    days: 10
+    color: "#43e97b"
+  - name: "Maladie"
+    days: unlimited
+    color: "#f093fb"
+```
+
+## Utilisation
+
+### Interface Web
+
+Accédez à l'interface web via votre navigateur :
+
+```
+https://offly.example.com
+```
+
+### API
+
+```bash
+# Créer une demande de congé
+curl -X POST https://offly.example.com/api/v1/requests \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "Congés payés",
+    "startDate": "2024-07-01",
+    "endDate": "2024-07-15",
+    "reason": "Vacances d'été"
+  }'
+```
+
+## Cas d'Usage
+
+<Card title="PME" icon="rocket">
+  Gérez les congés de votre équipe simplement
+</Card>
+
+<Card title="Remote Teams" icon="setting">
+  Coordonnez les absences dans des équipes distribuées
+</Card>
+
+<Card title="Conformité" icon="warning">
+  Respectez les obligations légales de gestion des congés
+</Card>
+
+## Intégrations
+
+Offly s'intègre avec :
+- **Slack** : Notifications et approbations
+- **Google Calendar** : Synchronisation des congés
+- **LDAP/AD** : Authentification d'entreprise
+- **Webhooks** : Intégration personnalisée
+
+## Liens
+
+- [GitHub Repository](https://github.com/BananaOps/offly)
+- [Documentation](https://docs.bananaops.tech/offly)
+
+## Support
+
+Besoin d'aide ? 
+- [Issues GitHub](https://github.com/BananaOps/offly/issues)
+- [Discussions](https://github.com/BananaOps/offly/discussions)

@@ -1,0 +1,14 @@
+<svg width="140" height="32" viewBox="0 0 140 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Banana emoji -->
+  <text x="0" y="24" font-size="24" font-family="Arial, sans-serif">🍌</text>
+  
+  <!-- BananaOps text -->
+  <text x="30" y="21" 
+        font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" 
+        font-size="16" 
+        font-weight="700" 
+        fill="#1a1a1a"
+        letter-spacing="-0.5">
+    Banana<tspan fill="#FFD700">Ops</tspan>
+  </text>
+</svg>

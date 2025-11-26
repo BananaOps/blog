@@ -1,0 +1,75 @@
+{
+  "main": [
+    {
+      "label": "Accueil",
+      "translations": {
+        "fr": "Accueil"
+      },
+      "slug": "index"
+    },
+    {
+      "label": "Projets",
+      "translations": {
+        "fr": "Projets"
+      },
+      "items": [
+        {
+          "label": "🚀 Tracker",
+          "translations": {
+            "fr": "🚀 Tracker"
+          },
+          "slug": "projects/tracker"
+        },
+        {
+          "label": "💬 Tracker-Slack",
+          "translations": {
+            "fr": "💬 Tracker-Slack"
+          },
+          "slug": "projects/tracker-slack"
+        },
+        {
+          "label": "🍩 Homer-k8s",
+          "translations": {
+            "fr": "🍩 Homer-k8s"
+          },
+          "slug": "projects/homer-k8s"
+        },
+        {
+          "label": "💲 Cloudoff",
+          "translations": {
+            "fr": "💲 Cloudoff"
+          },
+          "slug": "projects/cloudoff"
+        },
+        {
+          "label": "🔄 Skopeo",
+          "translations": {
+            "fr": "🔄 Skopeo"
+          },
+          "slug": "projects/skopeo"
+        },
+        {
+          "label": "📅 Offly",
+          "translations": {
+            "fr": "📅 Offly"
+          },
+          "slug": "projects/offly"
+        }
+      ]
+    },
+    {
+      "label": "Documentation",
+      "translations": {
+        "fr": "Documentation"
+      },
+      "slug": "docs/quick-start"
+    },
+    {
+      "label": "Contribuer",
+      "translations": {
+        "fr": "Contribuer"
+      },
+      "slug": "docs/contributing"
+    }
+  ]
+}

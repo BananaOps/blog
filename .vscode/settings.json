@@ -66,5 +66,25 @@
     "yaml",
     "toml",
     "astro"
-  ]
+  ],
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#f8c972",
+    "activityBar.background": "#f8c972",
+    "activityBar.foreground": "#15202b",
+    "activityBar.inactiveForeground": "#15202b99",
+    "activityBarBadge.background": "#089865",
+    "activityBarBadge.foreground": "#e7e7e7",
+    "commandCenter.border": "#15202b99",
+    "sash.hoverBorder": "#f8c972",
+    "statusBar.background": "#f5b642",
+    "statusBar.foreground": "#15202b",
+    "statusBarItem.hoverBackground": "#f2a312",
+    "statusBarItem.remoteBackground": "#f5b642",
+    "statusBarItem.remoteForeground": "#15202b",
+    "titleBar.activeBackground": "#f5b642",
+    "titleBar.activeForeground": "#15202b",
+    "titleBar.inactiveBackground": "#f5b64299",
+    "titleBar.inactiveForeground": "#15202b99"
+  },
+  "peacock.color": "#f5b642"
 }

@@ -1,0 +1,155 @@
+---
+title: Guide de Contribution
+description: Comment contribuer aux projets BananaOps
+---
+
+import { Card, Steps } from '@astrojs/starlight/components';
+
+# Guide de Contribution 🤝
+
+Merci de votre intérêt pour contribuer à BananaOps ! Nous accueillons toutes les contributions.
+
+## Comment Contribuer
+
+### Signaler un Bug 🐛
+
+<Steps>
+
+1. **Vérifier** que le bug n'existe pas déjà dans les [Issues](https://github.com/bananaops)
+
+2. **Créer une issue** avec :
+   - Titre clair et descriptif
+   - Étapes pour reproduire
+   - Comportement attendu vs actuel
+   - Captures d'écran si pertinent
+   - Environnement (OS, version Node.js, etc.)
+
+3. **Attendre** les retours de la communauté
+
+</Steps>
+
+### Proposer une Fonctionnalité 💡
+
+1. Ouvrez une **Discussion** sur GitHub
+2. Expliquez le problème que vous voulez résoudre
+3. Proposez une solution
+4. Discutez avec la communauté
+
+### Soumettre une Pull Request 🚀
+
+<Steps>
+
+1. **Fork** le repository
+
+2. **Clone** votre fork
+   ```bash
+   git clone https://github.com/VOTRE-USERNAME/projet.git
+   cd projet
+   ```
+
+3. **Créez une branche**
+   ```bash
+   git checkout -b feature/ma-fonctionnalite
+   ```
+
+4. **Installez les dépendances**
+   ```bash
+   task install
+   ```
+
+5. **Faites vos modifications**
+   - Suivez les conventions de code
+   - Ajoutez des tests si nécessaire
+   - Mettez à jour la documentation
+
+6. **Testez**
+   ```bash
+   task test
+   ```
+
+7. **Commit**
+   ```bash
+   git add .
+   git commit -m "feat: ajout de ma fonctionnalité"
+   ```
+
+8. **Push**
+   ```bash
+   git push origin feature/ma-fonctionnalite
+   ```
+
+9. **Ouvrez une Pull Request** sur GitHub
+
+</Steps>
+
+## Standards de Code
+
+### Messages de Commit
+
+Nous utilisons [Conventional Commits](https://www.conventionalcommits.org/) :
+
+```bash
+feat: ajout d'une nouvelle fonctionnalité
+fix: correction d'un bug
+docs: mise à jour de la documentation
+style: formatage du code
+refactor: refactoring sans changement de fonctionnalité
+test: ajout ou modification de tests
+chore: tâches de maintenance
+```
+
+Exemples :
+```bash
+feat(tracker): ajout du support PostgreSQL
+fix(slack): correction du formatage des messages
+docs(readme): mise à jour des instructions d'installation
+```
+
+## Bonnes Pratiques
+
+<Card title="✅ À Faire" icon="approve-check">
+  - Écrire des tests
+  - Documenter votre code
+  - Suivre les conventions
+  - Être respectueux
+  - Demander de l'aide si besoin
+</Card>
+
+<Card title="❌ À Éviter" icon="error">
+  - Commits trop gros
+  - Code non testé
+  - Breaking changes sans discussion
+  - Code non documenté
+</Card>
+
+## Communauté
+
+### Code de Conduite
+
+Soyez respectueux et bienveillant. Nous voulons que BananaOps soit un espace accueillant pour tous.
+
+### Communication
+
+- **GitHub Discussions** : Questions générales
+- **Issues** : Bugs et features
+- **Pull Requests** : Code reviews
+
+## Reconnaissance
+
+Les contributeurs sont listés dans :
+- README.md
+- CONTRIBUTORS.md
+- Release notes
+
+## Licence
+
+En contribuant, vous acceptez que vos contributions soient sous licence du projet.
+
+## Questions ?
+
+N'hésitez pas à :
+- Ouvrir une [Discussion](https://github.com/bananaops/discussions)
+
+---
+
+Merci de contribuer à rendre le DevOps plus simple ! 🍌🚀

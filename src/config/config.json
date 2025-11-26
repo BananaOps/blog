@@ -1,0 +1,32 @@
+{
+  "site": {
+    "title": "BananaOps",
+    "logo": "/src/assets/logo-light.svg",
+    "logo_darkmode": "/src/assets/logo-dark.svg",
+    "logo_width": "127",
+    "logo_height": "32",
+    "logo_text": "BananaOps 🍌"
+  },
+
+  "settings": {
+    "search": true,
+    "theme_switcher": true
+  },
+
+  "params": {
+    "footer_contact": {
+      "enable": false,
+      "action": ""
+    },
+    "copyright": "BananaOps - Open Source DevOps Tools &copy; 2024-2025. Rendons le DevOps plus simple ! 🍌"
+  },
+
+  "navigation_button": {
+    "enable": true,
+    "label": "Découvrir",
+    "translations": {
+      "fr": "Découvrir"
+    },
+    "link": "/projects/tracker/"
+  }
+}

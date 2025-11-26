@@ -1,0 +1,19 @@
+{
+  "main": [
+    {
+      "icon": "github",
+      "label": "GitHub",
+      "href": "https://github.com/bananaops"
+    },
+    {
+      "icon": "twitter",
+      "label": "Twitter",
+      "href": "https://twitter.com/bananaops"
+    },
+    {
+      "icon": "linkedin",
+      "label": "LinkedIn",
+      "href": "https://linkedin.com/company/bananaops"
+    }
+  ]
+}

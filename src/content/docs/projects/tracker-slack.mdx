@@ -1,0 +1,215 @@
+---
+title: 💬 Tracker-Slack
+description: Intégration Slack pour Tracker
+---
+
+import { Card, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Intégration Slack pour Tracker. Recevez des notifications en temps réel de tous vos changements directement dans vos canaux Slack.
+
+## Fonctionnalités
+
+- **Notifications en temps réel** : Alertes instantanées dans Slack
+- **Messages formatés** : Notifications riches avec contexte complet
+- **Canaux configurables** : Routage intelligent par type de changement
+- **Mentions automatiques** : Notifiez les bonnes personnes
+- **Threads** : Conversations organisées par déploiement
+
+## Installation
+
+### Via Helm
+
+```bash
+helm repo add bananaops https://bananaops.github.io/tracker-slack/ 
+helm repo update
+helm install tracker-slack bananaops/tracker-slack \
+  --namespace tracker \
+  --set slack.token=xoxb-your-token
+```
+
+### Via kubectl
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BananaOps/tracker-slack/main/deploy/kubernetes.yaml
+```
+
+## Configuration
+
+<Steps>
+
+1. **Créer une Slack App**
+   
+   Allez sur [api.slack.com/apps](https://api.slack.com/apps) et créez une nouvelle application.
+
+2. **Configurer les permissions**
+   
+   Ajoutez les scopes OAuth :
+   - `chat:write`
+   - `chat:write.public`
+   - `channels:read`
+
+3. **Créer un Secret Kubernetes**
+   
+   ```bash
+   kubectl create secret generic tracker-slack \
+     --from-literal=token=xoxb-your-slack-token \
+     --namespace tracker
+   ```
+
+4. **Installer avec Helm**
+   
+   ```bash
+   helm install tracker-slack bananaops/tracker-slack \
+     --namespace tracker \
+     --values values.yaml
+   ```
+
+</Steps>
+
+## Configuration Helm
+
+```yaml
+# values.yaml
+replicaCount: 1
+
+image:
+  repository: bananaops/tracker-slack
+  tag: "latest"
+
+slack:
+  # Token depuis un secret existant
+  existingSecret: tracker-slack
+  tokenKey: token
+  
+  defaultChannel: "#deployments"
+
+tracker:
+  # URL du service Tracker dans le cluster
+  url: "http://tracker.tracker.svc.cluster.local"
+
+config:
+  channels:
+    deployments: "#deployments"
+    incidents: "#incidents"
+    infrastructure: "#infra-changes"
+  
+  routing:
+    - match:
+        environment: production
+      channel: "#prod-deployments"
+      mentions: ["@prod-team"]
+    
+    - match:
+        severity: high
+      channel: "#incidents"
+      mentions: ["@oncall", "@sre-team"]
+  
+  formatting:
+    emoji: true
+    threads: true
+    reactions: true
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+```
+
+## Exemples de Messages
+
+### Déploiement Réussi
+```
+🚀 Déploiement réussi
+
+Service: api-backend
+Version: 1.2.3 → 1.2.4
+Environnement: production
+Auteur: @john
+Durée: 2m 34s
+
+✅ Tous les tests passés
+📊 Voir les métriques
+```
+
+### Incident Détecté
+```
+⚠️ Incident détecté
+
+Service: api-backend
+Sévérité: HIGH
+Message: Taux d'erreur élevé (15%)
+
+Dernier changement: v1.2.4 (il y a 5 min)
+Auteur: @john
+
+🔍 Voir les logs | 🔄 Rollback
+```
+
+## Déploiement avec Tracker
+
+Tracker-Slack se déploie dans le même namespace que Tracker et communique via le réseau interne Kubernetes :
+
+```bash
+# Installer Tracker et Tracker-Slack ensemble
+helm install tracker bananaops/tracker --namespace tracker --create-namespace
+helm install tracker-slack bananaops/tracker-slack --namespace tracker
+
+# Vérifier les services
+kubectl get svc -n tracker
+```
+
+## Webhooks Kubernetes
+
+Tracker-Slack peut recevoir des événements directement depuis Kubernetes :
+
+```yaml
+# webhook-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tracker-slack-webhooks
+  namespace: tracker
+data:
+  webhooks.yaml: |
+    webhooks:
+      - name: deployment-notifications
+        events:
+          - deployment.created
+          - deployment.updated
+        channel: "#deployments"
+      
+      - name: incident-alerts
+        events:
+          - incident.created
+          - incident.high-severity
+        channel: "#incidents"
+        mentions: ["@oncall"]
+```
+
+## Intégrations Kubernetes
+
+<Card title="Tracker" icon="star">
+  Communication native avec [Tracker](/projects/tracker/) via service K8s
+</Card>
+
+<Card title="ArgoCD" icon="rocket">
+  Notifications automatiques des synchronisations ArgoCD
+</Card>
+
+<Card title="Prometheus" icon="warning">
+  Alertes Prometheus vers Slack via Tracker
+</Card>
+
+## Liens
+
+- [GitHub Repository](https://github.com/BananaOps/tracker-slack)
+- [Documentation](https://docs.bananaops.tech/tracker-slack)
+- [Exemples](https://github.com/BananaOps/tracker-slack/tree/main/examples)
+
+## Support
+
+- [Issues GitHub](https://github.com/BananaOps/tracker-slack/issues)
+- [Discussions](https://github.com/BananaOps/tracker-slack/discussions)

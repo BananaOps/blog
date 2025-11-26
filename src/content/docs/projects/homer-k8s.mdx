@@ -1,0 +1,174 @@
+---
+title: 🍩 Homer-k8s
+description: Dashboard Homer optimisé pour Kubernetes
+---
+
+import { Card, Tabs, TabItem, Steps } from '@astrojs/starlight/components';
+
+Dashboard Homer optimisé pour Kubernetes. Centralisez l'accès à tous vos services K8s dans une interface élégante et intuitive.
+
+## Fonctionnalités
+
+- **Configuration automatique** : Découverte automatique via CRD Kubernetes
+- **Interface élégante** : Dashboard Homer moderne et responsive
+- **Multi-cluster** : Gérez plusieurs clusters depuis un seul dashboard
+- **Recherche rapide** : Trouvez vos services instantanément
+- **Thèmes personnalisables** : Mode clair/sombre et thèmes custom
+- **Groupes intelligents** : Organisation automatique par namespace/labels
+
+## Installation
+
+### Via Helm
+
+```bash
+helm repo add bananaops https://charts.bananaops.tech
+helm repo update
+helm install homer-k8s bananaops/homer-k8s
+```
+
+### Via kubectl
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BananaOps/homer-k8s/main/deploy/kubernetes.yaml
+```
+
+## Configuration
+
+### Custom Resource Definition (CRD)
+
+Homer-k8s utilise une CRD pour configurer automatiquement les services :
+
+```yaml
+apiVersion: homer.bananaops.tech/v1
+kind: DashboardItem
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  name: "Grafana"
+  subtitle: "Monitoring & Dashboards"
+  logo: "https://grafana.com/static/img/menu/grafana2.svg"
+  url: "https://grafana.example.com"
+  target: "_blank"
+  group: "Monitoring"
+  tags:
+    - monitoring
+    - metrics
+```
+
+### Configuration Helm
+
+<Tabs>
+  <TabItem label="values.yaml">
+    ```yaml
+    # values.yaml
+    replicaCount: 2
+    
+    image:
+      repository: bananaops/homer-k8s
+      tag: "latest"
+    
+    ingress:
+      enabled: true
+      className: nginx
+      hosts:
+        - host: homer.example.com
+          paths:
+            - path: /
+              pathType: Prefix
+    
+    config:
+      title: "BananaOps Dashboard"
+      subtitle: "Kubernetes Services"
+      theme: dark
+      
+      discovery:
+        enabled: true
+        namespaces:
+          - default
+          - production
+          - staging
+        
+      groups:
+        - name: "Production"
+          filter:
+            namespace: production
+        - name: "Monitoring"
+          filter:
+            labels:
+              app.kubernetes.io/component: monitoring
+    ```
+  </TabItem>
+  <TabItem label="Installation">
+    ```bash
+    helm install homer-k8s bananaops/homer-k8s \
+      --values values.yaml \
+      --namespace homer \
+      --create-namespace
+    ```
+  </TabItem>
+</Tabs>
+
+## Découverte Automatique
+
+Homer-k8s peut découvrir automatiquement vos services via annotations :
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+  namespace: monitoring
+  annotations:
+    homer.bananaops.tech/enabled: "true"
+    homer.bananaops.tech/name: "Grafana"
+    homer.bananaops.tech/group: "Monitoring"
+    homer.bananaops.tech/icon: "fas fa-chart-line"
+    homer.bananaops.tech/url: "https://grafana.example.com"
+spec:
+  # ... service spec
+```
+
+## Thèmes
+
+Homer-k8s supporte plusieurs thèmes :
+
+<Card title="Thèmes Disponibles" icon="palette">
+  - **Default** : Thème Homer classique
+  - **Dark** : Mode sombre élégant
+  - **Nord** : Palette Nord
+  - **Catppuccin** : Thème Catppuccin
+  - **Custom** : Créez votre propre thème
+</Card>
+
+## Sécurité
+
+### RBAC
+
+Homer-k8s nécessite les permissions suivantes :
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: homer-k8s
+rules:
+  - apiGroups: [""]
+    resources: ["services", "ingresses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["homer.bananaops.tech"]
+    resources: ["dashboarditems"]
+    verbs: ["get", "list", "watch"]
+```
+
+## Liens
+
+- [GitHub Repository](https://github.com/BananaOps/homer-k8s)
+- [Helm Chart](https://github.com/BananaOps/homer-k8s/tree/main/charts)
+- [Documentation](https://docs.bananaops.tech/homer-k8s)
+- [Exemples](https://github.com/BananaOps/homer-k8s/tree/main/examples)
+
+## Support
+
+- [Issues GitHub](https://github.com/BananaOps/homer-k8s/issues)
+- [Discussions](https://github.com/BananaOps/homer-k8s/discussions)

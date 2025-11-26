@@ -1,0 +1,111 @@
+---
+title: BananaOps.tech
+description: Des outils open source pour simplifier vos opérations DevOps et Cloud
+template: splash
+hero:
+  title: |
+    BananaOps 🍌
+    <span class="text-accent">Open Source DevOps Tools</span>
+  tagline: Rendons le DevOps plus simple, pratique et énergisant !
+  actions:
+    - text: Découvrir nos projets
+      link: /projects/tracker/
+      icon: right-arrow
+      variant: primary
+    - text: Voir sur GitHub
+      link: https://github.com/bananaops
+      icon: external
+      variant: minimal
+---
+
+import ProjectCard from '../../components/ProjectCard.astro';
+import ProjectsGrid from '../../components/ProjectsGrid.astro';
+
+## Nos Projets Open Source
+
+<ProjectsGrid>
+  <ProjectCard 
+    title="Tracker"
+    description="Suivez et tracez tous les changements dans vos environnements de production. Gardez un historique complet de vos déploiements et modifications."
+    link="/projects/tracker/"
+    icon="fa-solid fa-rocket"
+    iconType="fontawesome"
+    gradient="linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+  />
+
+  <ProjectCard 
+    title="Tracker-Slack"
+    description="Intégration Slack pour Tracker. Recevez des notifications en temps réel de tous vos changements directement dans vos canaux Slack."
+    link="/projects/tracker-slack/"
+    icon="fa-brands fa-slack"
+    iconType="fontawesome"
+    gradient="linear-gradient(135deg, #f093fb 0%, #f5576c 100%)"
+  />
+
+  <ProjectCard 
+    title="Homer-k8s"
+    description="Dashboard Homer optimisé pour Kubernetes. Centralisez l'accès à tous vos services K8s dans une interface élégante et intuitive."
+    link="/projects/homer-k8s/"
+    icon="🍩"
+    gradient="linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)"
+  />
+
+  <ProjectCard 
+    title="Cloudoff"
+    description="Réduisez vos coûts cloud en automatisant l'arrêt et le démarrage de vos ressources non-utilisées. Économisez sans effort."
+    link="/projects/cloudoff/"
+    icon="fa-solid fa-filter-circle-dollar"
+    iconType="fontawesome"
+    gradient="linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)"
+  />
+
+  <ProjectCard 
+    title="Skopeo"
+    description="Synchronisez vos Helm charts sur des registries OCI privés comme ECR ou Nexus. Simplifiez la gestion de vos artefacts Helm."
+    link="/projects/skopeo/"
+    icon="fa-solid fa-sync"
+    iconType="fontawesome"
+    gradient="linear-gradient(135deg, #fa8bff 0%, #2bd2ff 100%)"
+  />
+
+  <ProjectCard 
+    title="Offly (Comming Soon)"
+    description="Time off manager moderne et intuitif. Gérez les absences de votre équipe simplement et efficacement."
+    link="/projects/offly/"
+    icon="fa-solid fa-calendar-days"
+    iconType="fontawesome"
+    gradient="linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)"
+  />
+</ProjectsGrid>
+
+## Pourquoi BananaOps ?
+
+Nous croyons que les outils DevOps doivent être **simples, efficaces et accessibles à tous**.
+
+Comme une banane 🍌, nos outils sont :
+
+- **Naturels** : Intuitifs et faciles à prendre en main
+- **Pratiques** : Conçus pour résoudre de vrais problèmes  
+- **Énergisants** : Ils vous font gagner du temps et de l'énergie
+
+## Open Source & Communauté
+
+Tous nos projets sont open source. Nous accueillons les contributions de la communauté 
+et nous croyons en la transparence et la collaboration.
+
+<div style="max-width: 600px; margin: 2rem 0;">
+  <ProjectCard 
+    title="Contribuer"
+    description="Rejoignez-nous pour rendre le DevOps plus simple et plus fun ! Tous nos projets sont ouverts aux contributions."
+    link="/docs/contributing/"
+    icon="🤝"
+    gradient="linear-gradient(135deg, #fa709a 0%, #fee140 100%)"
+  />
+</div>
+
+## Démarrage Rapide
+
+Prêt à commencer ? Consultez notre guide de démarrage rapide pour installer et configurer 
+vos premiers outils BananaOps.
+
+[Démarrage Rapide →](/docs/quick-start/)

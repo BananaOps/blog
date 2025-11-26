@@ -1,0 +1,51 @@
+---
+interface Props {
+  icon: string; // Font Awesome class (ex: "fa-rocket")
+  gradient: string;
+}
+
+const { icon, gradient } = Astro.props;
+---
+
+<div class="project-icon-wrapper" style={`background: ${gradient}`}>
+  <i class={`${icon} project-icon-fa`}></i>
+</div>
+
+<style>
+  .project-icon-wrapper {
+    width: 3.5rem;
+    height: 3.5rem;
+    min-height: 3.5rem;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 
+      0 4px 12px rgba(0, 0, 0, 0.15),
+      0 2px 4px rgba(0, 0, 0, 0.1),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.1),
+      inset 0 2px 4px rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .project-icon-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+    border-radius: 0.75rem 0.75rem 0 0;
+  }
+
+  .project-icon-fa {
+    font-size: 1.5rem;
+    color: white;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    z-index: 1;
+    position: relative;
+  }
+</style>

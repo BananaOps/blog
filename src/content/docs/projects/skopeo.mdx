@@ -1,0 +1,131 @@
+---
+title: 🔄 Skopeo
+description: Synchronisez vos Helm charts sur des registries OCI privés
+---
+
+import { Card, Tabs, TabItem, Steps } from '@astrojs/starlight/components';
+
+Skopeo est un outil pour synchroniser vos Helm charts sur des registries OCI privés comme ECR ou Nexus.
+
+## Fonctionnalités
+
+- **Synchronisation automatique** : Synchronisez vos charts Helm vers vos registries privés
+- **Multi-registries** : Support d'ECR, Nexus, Harbor, et autres registries OCI
+- **Gestion des versions** : Contrôlez quelles versions synchroniser
+- **Authentification sécurisée** : Support des credentials et tokens
+- **Scheduling** : Planifiez vos synchronisations
+
+## Installation
+
+### Via Helm
+
+```bash
+helm repo add bananaops https://charts.bananaops.tech
+helm repo update
+helm install skopeo bananaops/skopeo --namespace skopeo --create-namespace
+```
+
+### Via kubectl
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BananaOps/skopeo/main/deploy/kubernetes.yaml
+```
+
+## Démarrage Rapide
+
+<Steps>
+
+1. **Ajouter le repository Helm**
+   
+   ```bash
+   helm repo add bananaops https://charts.bananaops.tech
+   helm repo update
+   ```
+
+2. **Créer un fichier de configuration**
+   
+   ```yaml
+   # values.yaml
+   replicaCount: 1
+   
+   image:
+     repository: bananaops/skopeo
+     tag: "latest"
+   
+   config:
+     source:
+       registry: registry.hub.docker.com
+     destination:
+       registry: 123456789.dkr.ecr.eu-west-1.amazonaws.com
+       type: ecr
+       region: eu-west-1
+   
+   sync:
+     schedule: "0 */6 * * *"  # Toutes les 6 heures
+     charts:
+       - name: nginx
+         versions: ["1.0.0", "1.1.0"]
+   ```
+
+3. **Installer avec Helm**
+   
+   ```bash
+   helm install skopeo bananaops/skopeo \
+     --values values.yaml \
+     --namespace skopeo \
+     --create-namespace
+   ```
+
+4. **Vérifier le déploiement**
+   
+   ```bash
+   kubectl get pods -n skopeo
+   kubectl logs -n skopeo -l app=skopeo
+   ```
+
+</Steps>
+
+## Configuration
+
+### Registries supportés
+
+- **AWS ECR** : Elastic Container Registry
+- **Nexus** : Sonatype Nexus Repository
+- **Harbor** : Harbor Registry
+- **Docker Hub** : Docker Registry
+- **GitLab Registry** : GitLab Container Registry
+
+## Utilisation
+
+### Synchronisation manuelle
+
+```bash
+kubectl exec -n skopeo deployment/skopeo -- skopeo sync \
+  --source docker://registry.hub.docker.com/library/nginx:1.0.0 \
+  --dest docker://123456789.dkr.ecr.eu-west-1.amazonaws.com/nginx:1.0.0
+```
+
+## Cas d'Usage
+
+<Card title="Air-gapped Environments" icon="rocket">
+  Synchronisez vos charts vers des environnements isolés
+</Card>
+
+<Card title="Multi-cloud" icon="setting">
+  Distribuez vos charts sur plusieurs cloud providers
+</Card>
+
+<Card title="Backup" icon="warning">
+  Sauvegardez vos charts critiques
+</Card>
+
+## Liens
+
+- [GitHub Repository](https://github.com/BananaOps/skopeo)
+- [Documentation](https://docs.bananaops.tech/skopeo)
+
+## Support
+
+Besoin d'aide ? 
+- [Issues GitHub](https://github.com/BananaOps/skopeo/issues)
+- [Discussions](https://github.com/BananaOps/skopeo/discussions)

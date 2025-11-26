@@ -1,0 +1,32 @@
+---
+import config from "@/config/config.json" assert { type: "json" };
+import ImageMod from "../ImageMod.astro";
+const { siteTitle, siteTitleHref } = Astro.locals.starlightRoute;
+
+const { src, srcDarkmode }: { src?: string; srcDarkmode?: string } =
+  Astro.props;
+
+const theme_switcher = config.settings.theme_switcher;
+const {
+  logo,
+  logo_darkmode,
+  logo_width,
+  logo_height,
+  logo_text,
+  title,
+}: {
+  logo: string;
+  logo_darkmode: string;
+  logo_width: any;
+  logo_height: any;
+  logo_text: string;
+  title: string;
+} = config.site;
+---
+
+<a href={siteTitleHref} class="navbar-brand inline-block flex items-center gap-2 no-underline hover:no-underline">
+  <span class="text-2xl">🍌</span>
+  <span class="font-bold text-base">
+    <span class="dark:text-white text-gray-900">Banana</span><span class="text-yellow-500">Ops</span>
+  </span>
+</a>

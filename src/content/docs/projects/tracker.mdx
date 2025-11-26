@@ -1,0 +1,308 @@
+---
+title: 🚀 Tracker
+description: Suivez tous les changements dans vos environnements de production
+---
+
+import { Card, Tabs, TabItem, Steps } from '@astrojs/starlight/components';
+
+Tracker est un outil puissant pour suivre et monitorer tous les changements dans vos environnements de production.
+
+## Fonctionnalités
+
+### 🎯 Event Management
+
+- **Multiple Event Types** : Deployments, Operations, Drifts, Incidents, RPA Usage
+- **Rich Metadata** : Priority, Status, Environment, Owner, Impact tracking
+- **Linking** : Connect events to PRs, tickets, and related events
+- **Search & Filter** : Powerful search across all event attributes
+- **Timeline View** : Visualize events chronologically
+- **Calendar View** : See events in a calendar format
+
+### 📦 Service Catalog
+
+- **Inventory Management** : Track modules, libraries, projects, containers
+- **Version Tracking** : Monitor versions across your infrastructure
+- **Multi-Language** : Support for Go, Java, Python, JavaScript, and more
+- **Repository Links** : Direct links to GitHub/GitLab repositories
+- **Documentation** : Link to service documentation
+
+### 🔒 Distributed Locking
+
+- **Exclusive Locks** : Prevent concurrent operations
+- **Lock Ownership** : Track who owns which locks
+- **Automatic Cleanup** : Locks expire automatically
+- **Coordination** : Synchronize deployments and operations
+
+### 🎨 Modern UI
+
+- **Dashboard** : Overview of recent events and statistics
+- **Timeline** : Chronological event view with filtering
+- **Calendar** : Monthly calendar view of events
+- **Dark Mode** : Beautiful dark theme support
+- **Responsive** : Works on desktop, tablet, and mobile
+- **Real-time** : Auto-refresh and live updates
+
+### 🔌 API & Integration
+
+- **gRPC API** : High-performance native API
+- **REST API** : HTTP/JSON endpoints via grpc-gateway
+- **Swagger UI** : Interactive API documentation
+- **OpenAPI Spec** : Standard API specification
+- **Prometheus** : Built-in metrics endpoint
+
+## Installation
+
+### Via Helm
+
+```bash
+helm repo add bananaops https://bananaops.github.io/tracker/ 
+helm repo update
+helm install tracker bananaops/tracker --namespace tracker --create-namespace
+```
+
+## Démarrage Rapide
+
+<Steps>
+
+1. **Ajouter le repository Helm**
+   
+   ```bash
+   helm repo add bananaops https://bananaops.github.io/tracker/ 
+   helm repo update
+   ```
+
+2. **Créer un fichier de configuration**
+   
+   ```yaml
+   # values.yaml
+   replicaCount: 2
+   
+   image:
+     repository: bananaops/tracker
+     tag: "latest"
+   
+   ingress:
+     enabled: true
+     className: nginx
+     hosts:
+       - host: tracker.example.com
+         paths:
+           - path: /
+             pathType: Prefix
+   
+    env:
+      db:
+        host: tracker-mongodb
+        port: 27017
+      jira:
+        # Jira domain for ticket creation (e.g., your-company.atlassian.net or jira.company.com)
+        domain: "jira.company.com"
+        # Optional: Jira project key for quick ticket creation
+        projectKey: ""
+      slack:
+        # Slack workspace name (e.g., your-company)
+        workspace: "your-workspace"
+        # Slack channel Name for deployment events (e.g., tracker-deployments)
+        eventsChannel: ""
+       ```
+
+3. **Installer avec Helm**
+   
+   ```bash
+   helm install tracker bananaops/tracker \
+     --values values.yaml \
+     --namespace tracker \
+     --create-namespace
+   ```
+
+4. **Vérifier le déploiement**
+   
+   ```bash
+   kubectl get pods -n tracker
+   kubectl get ingress -n tracker
+   ```
+
+</Steps>
+
+## Configuration
+
+### Configuration Helm
+
+```yaml
+# values.yaml
+replicaCount: 2
+
+image:
+  repository: bananaops/tracker
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: tracker.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: tracker-tls
+      hosts:
+        - tracker.example.com
+
+config:
+  environment: production
+  retention:
+    days: 90
+  
+notifications:
+  slack:
+    enabled: true
+    webhook: ${SLACK_WEBHOOK}
+  email:
+    enabled: true
+    smtp:
+      host: smtp.example.com
+      port: 587
+
+persistence:
+  enabled: true
+  storageClass: "standard"
+  size: 10Gi
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+```
+
+## Utilisation dans Kubernetes
+
+### Enregistrer un changement via API
+
+```bash
+# Via kubectl port-forward
+kubectl port-forward -n tracker svc/tracker 8080:80
+
+# Enregistrer un déploiement
+curl -X POST http://localhost:8080/api/v1/track \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "deployment",
+    "service": "api-backend",
+    "version": "1.2.3",
+    "environment": "production",
+    "author": "john@example.com"
+  }'
+```
+
+### Intégration CI/CD
+
+```yaml
+# .github/workflows/deploy.yml
+- name: Track Deployment
+  run: |
+    kubectl run tracker-client --rm -i --restart=Never \
+      --image=curlimages/curl -- \
+      curl -X POST http://tracker.tracker.svc.cluster.local/api/v1/track \
+      -H "Content-Type: application/json" \
+      -d '{
+        "type": "deployment",
+        "service": "${{ github.repository }}",
+        "version": "${{ github.sha }}",
+        "environment": "production"
+      }'
+```
+
+### 🎯 Cas d'usage
+
+<Card title="Freeze de production" icon="warning">
+  Bloquer les déploiements pendant une période critique (Black Friday, maintenance)
+</Card>
+
+<Card title="Audit et compliance" icon="approve-check">
+  Tracer qui a déployé quoi et quand
+</Card>
+
+<Card title="Coordination d'équipes" icon="star">
+  Éviter les déploiements concurrents via le système de locks
+</Card>
+
+<Card title="Dashboard centralisé" icon="setting">
+  Interface web pour visualiser l'état des déploiements
+</Card>
+
+<Card title="API gRPC/REST" icon="rocket">
+  Intégration dans vos pipelines CI/CD (via l'API REST/gRPC)
+</Card>
+
+<Card title="Détection de déploiements simultanés" icon="warning">
+  Identifier et prévenir les déploiements concurrents sur une même application/environnement pendant des périodes qui se chevauchent
+</Card>
+
+<Card title="Éviter les conflits" icon="error">
+  Empêcher deux équipes de déployer simultanément sur le même environnement
+</Card>
+
+<Card title="Coordination temporelle" icon="approve-check">
+  Visualiser si un déploiement est déjà en cours avant d'en lancer un nouveau
+</Card>
+
+<Card title="Traçabilité des incidents" icon="information">
+  Comprendre si un problème vient de déploiements qui se sont superposés
+</Card>
+
+<Card title="Gestion des rollbacks" icon="rocket">
+  S'assurer qu'un rollback n'interfère pas avec un déploiement en cours
+</Card>
+
+
+### 🔗 Intégrations
+
+<Card title="Intégration Jira" icon="puzzle">
+  Créer automatiquement des tickets Jira pour les déploiements ou incidents
+</Card>
+
+<Card title="Intégration Slack" icon="comment">
+  Notifier une channel Slack des événements de déploiement via [Tracker-Slack](/projects/tracker-slack/)
+</Card>
+
+### 📊 Catalogues et Métadonnées
+
+<Card title="Catalogue d'applications" icon="open-book">
+  Centraliser les informations sur vos applications (repos, équipes, environnements)
+</Card>
+
+<Card title="Vue d'ensemble multi-environnements" icon="seti:config">
+  Visualiser quelles versions sont déployées sur dev/staging/prod
+</Card>
+
+
+## Intégrations Kubernetes
+
+Tracker s'intègre nativement avec :
+- **CI/CD** : GitHub Actions, GitLab CI, Tekton, Jenkins
+- **Monitoring** : Prometheus, Grafana
+- **Communication** : Slack (via [Tracker-Slack](/projects/tracker-slack/))
+
+
+## Liens
+
+- [🚀 Démo en ligne](https://tracker-demo.bananaops.cloud/)
+- [📚 Documentation API](https://tracker-demo.bananaops.cloud/docs)
+- [GitHub Repository](https://github.com/BananaOps/tracker)
+
+## Support
+
+Besoin d'aide ? 
+- [Issues GitHub](https://github.com/BananaOps/tracker/issues)
+- [Discussions](https://github.com/BananaOps/tracker/discussions)

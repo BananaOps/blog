@@ -1,0 +1,368 @@
+---
+title: 💲 Cloudoff
+description: Gestion intelligente des coûts cloud
+---
+
+import { Card, Tabs, TabItem, Steps } from '@astrojs/starlight/components';
+
+Réduisez vos coûts cloud en automatisant l'arrêt et le démarrage de vos ressources non-utilisées. Économisez sans effort.
+
+## Fonctionnalités
+
+- **Planification intelligente** : Arrêt/démarrage automatique selon des horaires
+- **Multi-cloud** : Support AWS, GCP, Azure
+- **Détection automatique** : Identifie les ressources éligibles
+- **Économies estimées** : Calcul des économies potentielles
+- **Notifications** : Alertes avant arrêt/démarrage
+- **Exceptions** : Gestion des ressources critiques
+- **Dry-run** : Testez sans risque
+
+## Installation
+
+### Via Helm
+
+```bash
+helm repo add bananaops https://charts.bananaops.tech
+helm repo update
+helm install cloudoff bananaops/cloudoff --namespace cloudoff --create-namespace
+```
+
+### Via kubectl
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BananaOps/cloudoff/main/deploy/kubernetes.yaml
+```
+
+## Configuration
+
+### Configuration Helm
+
+```yaml
+# values.yaml
+replicaCount: 1
+
+image:
+  repository: bananaops/cloudoff
+  tag: "latest"
+
+# CronJob pour exécution planifiée
+schedule: "0 * * * *"  # Toutes les heures
+
+config:
+  timezone: "Europe/Paris"
+  
+  # Planification simple
+  schedules:
+    weekdays:
+      stop: "19:00"
+      start: "08:00"
+    weekend:
+      stop: "friday 19:00"
+      start: "monday 08:00"
+  
+  # Providers cloud
+  providers:
+    aws:
+      enabled: true
+      regions:
+        - eu-west-1
+        - us-east-1
+      
+      resources:
+        ec2:
+          enabled: true
+          tags:
+            - key: "cloudoff:enabled"
+              value: "true"
+        
+        rds:
+          enabled: true
+          exclude:
+            - production-db
+        
+        eks:
+          enabled: false
+    
+    gcp:
+      enabled: false
+      project: "your-project-id"
+    
+    azure:
+      enabled: false
+      subscriptionId: "your-subscription-id"
+  
+  # Notifications
+  notifications:
+    slack:
+      enabled: true
+      webhook: ${SLACK_WEBHOOK}
+      channel: "#cloudoff"
+    
+    email:
+      enabled: true
+      recipients:
+        - ops@example.com
+  
+  dryRun: false
+
+# Credentials cloud via secrets
+cloudCredentials:
+  aws:
+    existingSecret: aws-credentials
+    accessKeyIdKey: access-key-id
+    secretAccessKeyKey: secret-access-key
+  
+  gcp:
+    existingSecret: gcp-credentials
+    serviceAccountKey: service-account.json
+  
+  azure:
+    existingSecret: azure-credentials
+    clientIdKey: client-id
+    clientSecretKey: client-secret
+    tenantIdKey: tenant-id
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+```
+
+## Déploiement des Credentials
+
+### AWS
+
+```bash
+kubectl create secret generic aws-credentials \
+  --from-literal=access-key-id=YOUR_ACCESS_KEY \
+  --from-literal=secret-access-key=YOUR_SECRET_KEY \
+  --namespace cloudoff
+```
+
+### GCP
+
+```bash
+kubectl create secret generic gcp-credentials \
+  --from-file=service-account.json=./gcp-sa.json \
+  --namespace cloudoff
+```
+
+### Azure
+
+```bash
+kubectl create secret generic azure-credentials \
+  --from-literal=client-id=YOUR_CLIENT_ID \
+  --from-literal=client-secret=YOUR_CLIENT_SECRET \
+  --from-literal=tenant-id=YOUR_TENANT_ID \
+  --namespace cloudoff
+```
+
+## Utilisation
+
+### Via kubectl
+
+```bash
+# Voir les logs du CronJob
+kubectl logs -n cloudoff -l app=cloudoff
+
+# Déclencher manuellement un job
+kubectl create job --from=cronjob/cloudoff cloudoff-manual -n cloudoff
+
+# Voir les ressources gérées
+kubectl get configmap cloudoff-state -n cloudoff -o yaml
+```
+
+### Dashboard
+
+Cloudoff expose un dashboard web pour visualiser les économies :
+
+```bash
+# Port-forward vers le dashboard
+kubectl port-forward -n cloudoff svc/cloudoff-dashboard 8080:80
+
+# Accéder au dashboard
+open http://localhost:8080
+```
+
+## Exemples de Scénarios
+
+### Environnement de Développement
+
+<Steps>
+
+1. **Configuration**
+   
+   ```yaml
+   # values.yaml
+   config:
+     schedules:
+       weekdays:
+         stop: "19:00"
+         start: "08:00"
+       weekend: "off"
+     
+     providers:
+       aws:
+         resources:
+           ec2:
+             tags:
+               - key: "Environment"
+                 value: "dev"
+   ```
+
+2. **Déploiement**
+   
+   ```bash
+   helm install cloudoff bananaops/cloudoff \
+     --values values.yaml \
+     --namespace cloudoff
+   ```
+
+3. **Économies**
+   
+   - 13h/jour en semaine (19h-8h)
+   - 48h le weekend
+   - **Total : 113h/semaine** (67% du temps)
+
+4. **Résultat**
+   
+   Économies de **~67% sur ces ressources** 💰
+
+</Steps>
+
+### Intégration avec Kubernetes Autoscaling
+
+Cloudoff peut gérer les node pools Kubernetes :
+
+```yaml
+config:
+  providers:
+    aws:
+      resources:
+        eks:
+          enabled: true
+          nodeGroups:
+            - name: dev-workers
+              minSize: 0
+              schedule:
+                weekdays:
+                  stop: "19:00"  # Scale to 0
+                  start: "08:00"  # Restore original size
+```
+
+## Ressources Supportées
+
+### AWS
+- EC2 Instances
+- RDS Databases
+- ECS Services
+- Auto Scaling Groups
+- ElastiCache
+- Redshift Clusters
+
+### GCP
+- Compute Engine Instances
+- Cloud SQL
+- GKE Node Pools
+- Cloud Composer
+
+### Azure
+- Virtual Machines
+- SQL Databases
+- AKS Node Pools
+- App Services
+
+## Sécurité
+
+### RBAC Kubernetes
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cloudoff
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps", "secrets"]
+    verbs: ["get", "list", "create", "update"]
+```
+
+### Permissions Cloud
+
+<Card title="Permissions Minimales" icon="lock">
+  Cloudoff utilise le principe du moindre privilège :
+  - Lecture des ressources
+  - Start/Stop uniquement
+  - Pas de suppression
+  - Pas de modification
+</Card>
+
+**AWS IAM Policy :**
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeInstances",
+        "ec2:StartInstances",
+        "ec2:StopInstances",
+        "rds:DescribeDBInstances",
+        "rds:StartDBInstance",
+        "rds:StopDBInstance"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/cloudoff:enabled": "true"
+        }
+      }
+    }
+  ]
+}
+```
+
+## Monitoring
+
+### Métriques Prometheus
+
+Cloudoff expose des métriques Prometheus :
+
+```yaml
+# ServiceMonitor pour Prometheus Operator
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: cloudoff
+  namespace: cloudoff
+spec:
+  selector:
+    matchLabels:
+      app: cloudoff
+  endpoints:
+    - port: metrics
+      interval: 30s
+```
+
+### Dashboard Grafana
+
+```bash
+# Importer le dashboard Cloudoff
+kubectl apply -f https://raw.githubusercontent.com/BananaOps/cloudoff/main/grafana/dashboard.json
+```
+
+## Liens
+
+- [GitHub Repository](https://github.com/BananaOps/cloudoff)
+- [Documentation](https://docs.bananaops.tech/cloudoff)
+- [Terraform Module](https://registry.terraform.io/modules/bananaops/cloudoff)
+- [Exemples](https://github.com/BananaOps/cloudoff/tree/main/examples)
+
+## Support
+
+- [Issues GitHub](https://github.com/BananaOps/cloudoff/issues)
+- [Discussions](https://github.com/BananaOps/cloudoff/discussions)
