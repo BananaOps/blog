@@ -5,6 +5,10 @@
       "url": "/"
     },
     {
+      "name": "Projets",
+      "url": "/fr/projects/tracker/"
+    },
+    {
       "name": "Documentation",
       "url": "/fr/docs/quick-start/"
     }
