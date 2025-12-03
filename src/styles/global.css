@@ -8,115 +8,257 @@
 @plugin "../tailwind-plugin/tw-bs-grid";
 
 :root {
-  --sl-color-accent-low: color-mix(in srgb, var(--color-primary), #000 90%);
-  --sl-color-accent: var(--color-primary);
-  --sl-color-accent-high: color-mix(in srgb, var(--color-primary), #fff 70%);
+  /* BananaOps Dark Mode Palette */
+  --banana-black-matte: #0C0C0C;
+  --banana-onyx-soft: #151515;
+  --banana-ivory-white: #F2F2F2;
+  --banana-warm-gray: #B8B8B8;
+  --banana-golden: #D8B634;
+  --banana-blue-mist: #5FA3F4;
+  --banana-soft-vanta: #0E0E0E;
+  --banana-glow: #F0C540;
 
-  --sl-color-white: var(--color-light);
-  --sl-color-gray-1: color-mix(
-    in srgb,
-    var(--color-dark) 6%,
-    var(--color-light) 94%
-  ); /* #eeeeee */
-  --sl-color-gray-2: color-mix(
-    in srgb,
-    var(--color-dark) 24%,
-    var(--color-light) 76%
-  ); /* #c2c2c2 */
-  --sl-color-gray-3: color-mix(
-    in srgb,
-    var(--color-dark) 45%,
-    var(--color-light) 55%
-  ); /* #8b8b8b */
-  --sl-color-gray-4: color-mix(
-    in srgb,
-    var(--color-dark) 65%,
-    var(--color-light) 35%
-  ); /* #585858 */
-  --sl-color-gray-5: color-mix(
-    in srgb,
-    var(--color-dark) 78%,
-    var(--color-light) 22%
-  ); /* #383838 */
-  --sl-color-gray-6: color-mix(
-    in srgb,
-    var(--color-dark) 85%,
-    var(--color-light) 15%
-  ); /* #272727 */
+  --sl-color-accent-low: color-mix(in srgb, var(--banana-golden), #000 70%);
+  --sl-color-accent: var(--banana-golden);
+  --sl-color-accent-high: var(--banana-glow);
 
-  /* color-dark: #040404 */
-  --sl-color-black: var(--color-dark);
+  --sl-color-white: var(--banana-ivory-white);
+  --sl-color-gray-1: #1A1A1A;
+  --sl-color-gray-2: var(--banana-onyx-soft);
+  --sl-color-gray-3: #2A2A2A;
+  --sl-color-gray-4: #404040;
+  --sl-color-gray-5: #606060;
+  --sl-color-gray-6: var(--banana-warm-gray);
+
+  --sl-color-black: var(--banana-black-matte);
+  --sl-color-bg: var(--banana-black-matte);
+  --sl-color-bg-nav: var(--banana-onyx-soft);
+  --sl-color-bg-sidebar: var(--banana-onyx-soft);
+  
   --sl-sidebar-width: 320px;
   --sl-color-hairline: color-mix(
     in srgb,
-    var(--sl-color-white) 10%,
+    var(--banana-warm-gray) 15%,
     transparent
   );
-  --sl-color-hairline-light:#252525;
+  --sl-color-hairline-light: var(--banana-soft-vanta);
+  
+  /* Text colors */
+  --sl-color-text: var(--banana-ivory-white);
+  --sl-color-text-accent: var(--banana-golden);
 }
 
 /* Light mode colors. */
 :root[data-theme="light"] {
-  --sl-color-accent-low: color-mix(
-    in srgb,
-    var(--color-lightmode-primary),
-    #fff 70%
-  );
-  --sl-color-accent: var(--color-lightmode-primary);
-  --sl-color-accent-high: color-mix(
-    in srgb,
-    var(--color-lightmode-primary),
-    #000 90%
-  );
-  /* color-lightmode-light: #181818 */
-  --sl-color-white: var(--color-lightmode-light);
-  --sl-color-gray-1: color-mix(
-    in srgb,
-    var(--color-lightmode-dark) 15%,
-    var(--color-lightmode-light) 85%
-  ); /* #272727 */
-  --sl-color-gray-2: color-mix(
-    in srgb,
-    var(--color-lightmode-dark) 22%,
-    var(--color-lightmode-light) 78%
-  ); /* #383838 */
-  --sl-color-gray-3: color-mix(
-    in srgb,
-    var(--color-lightmode-dark) 35%,
-    var(--color-lightmode-light) 65%
-  ); /* #585858 */
-  --sl-color-gray-4: color-mix(
-    in srgb,
-    var(--color-lightmode-dark) 55%,
-    var(--color-lightmode-light) 45%
-  ); /* #8b8b8b */
-  --sl-color-gray-5: color-mix(
-    in srgb,
-    var(--color-lightmode-dark) 76%,
-    var(--color-lightmode-light) 24%
-  ); /* #c2c2c2 */
-  --sl-color-gray-6: color-mix(
-    in srgb,
-    var(--color-lightmode-dark) 94%,
-    var(--color-lightmode-light) 6%
-  ); /* #eeeeee */
-  --sl-color-gray-7: color-mix(
-    in srgb,
-    var(--color-lightmode-dark) 96%,
-    var(--color-lightmode-light) 4%
-  ); /* #f6f6f6 */
+  /* BananaOps Light Mode Palette */
+  --banana-yellow: #F7D438;
+  --banana-deep: #E5B82E;
+  --banana-dark-tech: #0E0E0E;
+  --banana-soft-brown: #7A4E12;
+  --banana-tech-gray: #EDEDED;
+  --banana-electric-blue: #3A82F7;
 
+  --sl-color-accent-low: color-mix(in srgb, var(--banana-yellow), #fff 50%);
+  --sl-color-accent: var(--banana-yellow);
+  --sl-color-accent-high: var(--banana-deep);
 
-  --sl-color-black: var(--color-lightmode-dark);
+  --sl-color-white: var(--banana-dark-tech);
+  --sl-color-gray-1: #FAFAFA;
+  --sl-color-gray-2: #F5F5F5;
+  --sl-color-gray-3: var(--banana-tech-gray);
+  --sl-color-gray-4: #C0C0C0;
+  --sl-color-gray-5: #808080;
+  --sl-color-gray-6: #404040;
+  --sl-color-gray-7: #FFFFFF;
+
+  --sl-color-black: var(--banana-dark-tech);
+  --sl-color-bg: #FFFFFF;
+  --sl-color-bg-nav: var(--banana-tech-gray);
+  --sl-color-bg-sidebar: #F9F9F9;
+  --sl-color-text: var(--banana-dark-tech);
+  --sl-color-text-accent: var(--banana-yellow);
+  
+  --sl-color-hairline: color-mix(
+    in srgb,
+    var(--banana-dark-tech) 15%,
+    transparent
+  );
 }
 
 @theme {
   --color-primary-gradient: linear-gradient(
     35.65deg,
-    #3a1c71 -10.94%,
-    var(--color-primary) 61.04%,
-    #ffca7b 133.01%
+    var(--banana-soft-vanta) -10.94%,
+    var(--banana-golden) 61.04%,
+    var(--banana-glow) 133.01%
   );
+}
+
+/* Language selector styles */
+starlight-lang-select {
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+starlight-lang-select > button {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  color: color-mix(in srgb, var(--banana-dark-tech) 90%, transparent) !important;
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer !important;
+  padding: 0.5rem !important;
+  transition: color 0.2s ease !important;
+}
+
+starlight-lang-select > button:hover {
+  color: var(--banana-deep) !important;
+}
+
+:root[data-theme="dark"] starlight-lang-select > button {
+  color: color-mix(in srgb, var(--sl-color-white) 90%, transparent) !important;
+}
+
+:root[data-theme="dark"] starlight-lang-select > button:hover {
+  color: var(--banana-golden) !important;
+}
+
+starlight-lang-select > button svg,
+starlight-lang-select > button span {
+  color: inherit !important;
+  opacity: 1 !important;
+}
+
+starlight-lang-select > button * {
+  color: inherit !important;
+}
+
+/* Search bar styles */
+.search-bar button,
+.search-bar button span,
+.search-bar button kbd,
+site-search button,
+site-search button span,
+site-search button kbd {
+  color: color-mix(in srgb, var(--banana-dark-tech) 90%, transparent) !important;
+  transition: color 0.2s ease;
+}
+
+.search-bar button:hover,
+.search-bar button:hover span,
+.search-bar button:hover kbd,
+site-search button:hover,
+site-search button:hover span,
+site-search button:hover kbd {
+  color: var(--banana-deep) !important;
+}
+
+:root[data-theme="dark"] .search-bar button,
+:root[data-theme="dark"] .search-bar button span,
+:root[data-theme="dark"] .search-bar button kbd,
+:root[data-theme="dark"] site-search button,
+:root[data-theme="dark"] site-search button span,
+:root[data-theme="dark"] site-search button kbd {
+  color: color-mix(in srgb, var(--sl-color-white) 90%, transparent) !important;
+}
+
+:root[data-theme="dark"] .search-bar button:hover,
+:root[data-theme="dark"] .search-bar button:hover span,
+:root[data-theme="dark"] .search-bar button:hover kbd,
+:root[data-theme="dark"] site-search button:hover,
+:root[data-theme="dark"] site-search button:hover span,
+:root[data-theme="dark"] site-search button:hover kbd {
+  color: var(--banana-golden) !important;
+}
+
+/* Sidebar links styles */
+.sidebar-content a,
+.sidebar-content a span {
+  color: color-mix(in srgb, var(--sl-color-white) 90%, transparent) !important;
+  transition: color 0.2s ease;
+}
+
+.sidebar-content a:hover,
+.sidebar-content a:hover span,
+.sidebar-content a[aria-current="page"],
+.sidebar-content a[aria-current="page"] span {
+  color: var(--banana-golden) !important;
+}
+
+:root[data-theme="light"] .sidebar-content a,
+:root[data-theme="light"] .sidebar-content a span {
+  color: color-mix(in srgb, var(--banana-dark-tech) 90%, transparent) !important;
+}
+
+:root[data-theme="light"] .sidebar-content a:hover,
+:root[data-theme="light"] .sidebar-content a:hover span,
+:root[data-theme="light"] .sidebar-content a[aria-current="page"],
+:root[data-theme="light"] .sidebar-content a[aria-current="page"] span {
+  color: var(--banana-deep) !important;
+}
+
+/* Table of contents "On this page" styles */
+.right-sidebar a,
+.right-sidebar a span,
+starlight-toc a,
+starlight-toc a span {
+  color: color-mix(in srgb, var(--sl-color-white) 90%, transparent) !important;
+  transition: color 0.2s ease;
+}
+
+.right-sidebar a:hover,
+.right-sidebar a:hover span,
+.right-sidebar a[aria-current="true"],
+.right-sidebar a[aria-current="true"] span,
+starlight-toc a:hover,
+starlight-toc a:hover span,
+starlight-toc a[aria-current="true"],
+starlight-toc a[aria-current="true"] span {
+  color: var(--banana-golden) !important;
+}
+
+:root[data-theme="light"] .right-sidebar a,
+:root[data-theme="light"] .right-sidebar a span,
+:root[data-theme="light"] starlight-toc a,
+:root[data-theme="light"] starlight-toc a span {
+  color: color-mix(in srgb, var(--banana-dark-tech) 90%, transparent) !important;
+}
+
+:root[data-theme="light"] .right-sidebar a:hover,
+:root[data-theme="light"] .right-sidebar a:hover span,
+:root[data-theme="light"] .right-sidebar a[aria-current="true"],
+:root[data-theme="light"] .right-sidebar a[aria-current="true"] span,
+:root[data-theme="light"] starlight-toc a:hover,
+:root[data-theme="light"] starlight-toc a:hover span,
+:root[data-theme="light"] starlight-toc a[aria-current="true"],
+:root[data-theme="light"] starlight-toc a[aria-current="true"] span {
+  color: var(--banana-deep) !important;
+}
+
+/* Language selector in header */
+.site-title + * starlight-lang-select > button,
+header starlight-lang-select > button,
+.header starlight-lang-select > button {
+  color: color-mix(in srgb, var(--sl-color-white) 90%, transparent) !important;
+}
+
+.site-title + * starlight-lang-select > button:hover,
+header starlight-lang-select > button:hover,
+.header starlight-lang-select > button:hover {
+  color: var(--banana-golden) !important;
+}
+
+:root[data-theme="light"] .site-title + * starlight-lang-select > button,
+:root[data-theme="light"] header starlight-lang-select > button,
+:root[data-theme="light"] .header starlight-lang-select > button {
+  color: color-mix(in srgb, var(--banana-dark-tech) 90%, transparent) !important;
+}
+
+:root[data-theme="light"] .site-title + * starlight-lang-select > button:hover,
+:root[data-theme="light"] header starlight-lang-select > button:hover,
+:root[data-theme="light"] .header starlight-lang-select > button:hover {
+  color: var(--banana-deep) !important;
 }
 
 @import "./base.css";

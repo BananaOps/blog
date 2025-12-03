@@ -47,8 +47,16 @@
 }
 
 .nav-link {
-  @apply  hover:text-lightmode-primary! dark:hover:text-primary block p-3 cursor-pointer font-medium transition lg:px-2 lg:py-3 no-underline;
+  @apply block p-3 cursor-pointer font-medium transition lg:px-2 lg:py-3 no-underline;
   color: color-mix(in srgb, var(--sl-color-white) 90%, transparent);
+}
+
+.nav-link:hover {
+  color: var(--banana-golden) !important;
+}
+
+:root[data-theme="light"] .nav-link:hover {
+  color: var(--banana-deep) !important;
 }
 
 .nav-dropdown {
@@ -72,8 +80,16 @@
 }
 
 .nav-dropdown-link {
-  @apply hover:text-lightmode-primary  dark:hover:text-lightmode-primary block py-1 font-medium transition  no-underline;
+  @apply block py-1 font-medium transition no-underline;
   color: color-mix(in srgb, var(--sl-color-white) 90%, transparent);
+}
+
+.nav-dropdown-link:hover {
+  color: var(--banana-golden) !important;
+}
+
+:root[data-theme="light"] .nav-dropdown-link:hover {
+  color: var(--banana-deep) !important;
 }
 
 /* navbar toggler */

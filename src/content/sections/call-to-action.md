@@ -1,6 +1,6 @@
 ---
 title: |
-  Ready to explore <span class='light-text'>Dockit experience? </span>
+  Ready to explore <span class='light-text'>BananaOps experience? </span>
 description: Discover tips, resources, and guidance to maximize experience with our documentation.
 enable: true
 fill_button:

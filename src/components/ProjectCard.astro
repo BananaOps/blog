@@ -70,16 +70,24 @@ const { title, description, link, icon, gradient, iconType = 'emoji' } = Astro.p
     padding: 0;
     font-size: 1.25rem;
     font-weight: 700;
-    color: var(--sl-color-white);
+    color: var(--sl-color-text);
     line-height: 1.4;
   }
 
   .project-description {
     margin: 0;
     padding: 0;
-    color: var(--sl-color-gray-2);
+    color: var(--sl-color-gray-6);
     line-height: 1.6;
     flex-grow: 1;
+  }
+
+  :root[data-theme="dark"] .project-title {
+    color: var(--banana-ivory-white);
+  }
+
+  :root[data-theme="dark"] .project-description {
+    color: var(--banana-warm-gray);
   }
 
   .project-link {
