@@ -3,8 +3,60 @@
  * HomePage.astro — Page d'accueil BananaOps
  * Contient hero + tools grid + who we are
  * Fidèle à la maquette Home.dc.html
+ *
+ * Les champs `version` et `license` écrits ci-dessous ne servent que de repli :
+ * ils sont écrasés au build par les données réelles du dépôt (voir lib/github).
+ * Le reste (description, stack, statut) est éditorial et reste à la main.
  */
 import ToolCard from './ToolCard.astro';
+import { getRepoInfo, withRepoInfo } from '../lib/github';
+
+const tools = [
+  {
+    toolName: 'tracker',
+    repo: 'tracker',
+    desc: 'Track deployments, operations, drift and incidents across your platforms. REST API and web UI included.',
+    stack: 'Go · MongoDB',
+    version: 'v0.21.1',
+    license: 'Apache-2.0',
+    status: 'stable' as const,
+  },
+  {
+    toolName: 'cloudoff',
+    repo: 'cloudoff',
+    desc: 'Shuts EC2 instances down at night. Uptime and downtime windows are read straight from instance tags — inspired by kube-downscaler.',
+    stack: 'Go · AWS EC2',
+    version: 'v1.1.0',
+    license: 'Apache-2.0',
+    status: 'stable' as const,
+  },
+  {
+    toolName: 'scope',
+    repo: 'scope',
+    desc: 'Synchronises Helm charts between registries — Nexus, ECR, Docker Hub and Scaleway Registry.',
+    stack: 'Go · OCI · Helm',
+    version: 'v0.4.0',
+    license: 'Apache-2.0',
+    status: 'beta' as const,
+  },
+  {
+    toolName: 'homer-k8s',
+    repo: 'homer-k8s',
+    desc: 'Kubernetes operator that generates a dynamic Homer dashboard: one home page for every tool and link in your cluster.',
+    stack: 'Go · Operator SDK',
+    version: 'v0.5.1',
+    license: 'Apache-2.0',
+    status: 'beta' as const,
+  },
+];
+
+const toolCards = await Promise.all(
+  tools.map(async (tool) => ({
+    ...withRepoInfo(tool, await getRepoInfo(tool.repo)),
+    docsHref: `https://docs.bananaops.tech/${tool.toolName}`,
+    repoHref: `https://github.com/BananaOps/${tool.repo}`,
+  }))
+);
 ---
 
 <div class="bo-home">
@@ -58,49 +110,21 @@ import ToolCard from './ToolCard.astro';
   <section id="tools" class="bo-tools">
     <div class="bo-tools__header">
       <h2 class="bo-tools__title">Tools</h2>
-      <span class="bo-tools__meta">4 projects &middot; all Go &middot; all open source</span>
+      <span class="bo-tools__meta">{toolCards.length} projects &middot; all Go &middot; all open source</span>
     </div>
     <div class="bo-tools__grid">
-      <ToolCard
-        toolName="tracker"
-        desc="Track deployments, operations, drift and incidents across your platforms. REST API and web UI included."
-        stack="Go · MongoDB"
-        version="v0.9.3"
-        license="MIT"
-        status="stable"
-        docsHref="https://docs.bananaops.tech/tracker"
-        repoHref="https://github.com/BananaOps/tracker"
-      />
-      <ToolCard
-        toolName="cloudoff"
-        desc="Shuts EC2 instances down at night. Uptime and downtime windows are read straight from instance tags — inspired by kube-downscaler."
-        stack="Go · AWS EC2"
-        version="v0.4.2"
-        license="MIT"
-        status="beta"
-        docsHref="https://docs.bananaops.tech/cloudoff"
-        repoHref="https://github.com/BananaOps/cloudoff"
-      />
-      <ToolCard
-        toolName="skopeo"
-        desc="Synchronises Helm charts between registries — Nexus, ECR and Scaleway Registry."
-        stack="Go · OCI · Helm"
-        version="v0.3.0"
-        license="MIT"
-        status="beta"
-        docsHref="https://docs.bananaops.tech/skopeo"
-        repoHref="https://github.com/BananaOps/skopeo"
-      />
-      <ToolCard
-        toolName="homer-k8s"
-        desc="Kubernetes operator that generates a dynamic Homer dashboard: one home page for every tool and link in your cluster."
-        stack="Go · Operator SDK"
-        version="v0.2.1"
-        license="MIT"
-        status="WIP"
-        docsHref="https://docs.bananaops.tech/homer-k8s"
-        repoHref="https://github.com/BananaOps/homer-k8s"
-      />
+      {toolCards.map((tool) => (
+        <ToolCard
+          toolName={tool.toolName}
+          desc={tool.desc}
+          stack={tool.stack}
+          version={tool.version}
+          license={tool.license}
+          status={tool.status}
+          docsHref={tool.docsHref}
+          repoHref={tool.repoHref}
+        />
+      ))}
     </div>
   </section>
 
@@ -155,7 +179,7 @@ import ToolCard from './ToolCard.astro';
     grid-template-columns: 1fr 400px;
     align-items: center;
     gap: 64px;
-    padding: 88px 96px 76px;
+    padding: 40px 96px 76px;
     background: #EDE6D8;
   }
   .bo-hero__content {
@@ -261,6 +285,17 @@ import ToolCard from './ToolCard.astro';
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 20px;
+    /* Toutes les lignes prennent la hauteur de la plus haute carte :
+       les vignettes gardent la même hauteur d'un bout à l'autre de la grille. */
+    grid-auto-rows: 1fr;
+    align-items: stretch;
+  }
+  .bo-tools__grid > :global(*) {
+    height: 100%;
+    /* Neutralise le margin-top que Starlight applique à tout frère suivant
+       dans .sl-markdown-content : il décalait toutes les cartes sauf la
+       première. Non layerisé, donc prioritaire sur @layer starlight.content. */
+    margin-top: 0;
   }
 
   /* Who we are */
@@ -314,7 +349,7 @@ import ToolCard from './ToolCard.astro';
   @media (max-width: 1024px) {
     .bo-hero {
       grid-template-columns: 1fr;
-      padding: 60px 40px 48px;
+      padding: 32px 40px 48px;
       gap: 32px;
     }
     .bo-hero__mascot {

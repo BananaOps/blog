@@ -8,15 +8,18 @@
 <style>
   .projects-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 1.5rem;
     margin: 2rem 0;
     align-items: stretch;
+    /* Toutes les lignes prennent la hauteur de la plus haute carte :
+       les vignettes gardent la même hauteur d'un bout à l'autre de la grille. */
+    grid-auto-rows: 1fr;
   }
 
   @media (max-width: 1200px) {
     .projects-grid {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
@@ -28,5 +31,12 @@
   
   .projects-grid :global(> *) {
     display: flex;
+    height: 100%;
+    min-width: 0;
+    /* Starlight ajoute margin-top: var(--sl-content-gap-y) à tout élément suivi
+       d'un frère dans .sl-markdown-content. Dans une grille, ça décale toutes
+       les cartes sauf la première. Ces styles ne sont pas dans un layer, ils
+       l'emportent donc sur @layer starlight.content. */
+    margin-top: 0;
   }
 </style>

@@ -1,5 +1,4 @@
 ---
-import Search from "./Search.astro";
 const { data } = Astro.locals.starlightRoute.entry;
 const { title = data.title, tagline } = data.hero || {};
 const { sidebar } = Astro.locals.starlightRoute;
@@ -16,8 +15,13 @@ function getFirstHref(item: any): string | null {
 
 // check if 404 page
 const is404 = Astro.locals.starlightRoute?.id === "404";
+
+// La home (id "") a son propre hero dans HomePage.astro : on n'affiche pas
+// celui de Starlight, sinon on empile deux titres et la rangée "Popular".
+const hasOwnHero = Astro.locals.starlightRoute?.id === "";
 ---
 
+{!hasOwnHero && (
 <div
   class="hero flex flex-col items-center mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-35"
 >
@@ -27,12 +31,6 @@ const is404 = Astro.locals.starlightRoute?.id === "404";
   {
     !is404 && (
       <div class="mt-12 max-w-4xl">
-        <div class="search-container rounded-2xl p-2 mb-6">
-          <div class="search-bar">
-            <Search />
-          </div>
-        </div>
-
         <div class="flex justify-center items-center flex-wrap gap-4">
           <p class="text-base font-normal">
             {Astro.locals.t("hero.popular", "Popular")}:
@@ -57,6 +55,7 @@ const is404 = Astro.locals.starlightRoute?.id === "404";
     )
   }
 </div>
+)}
 
 <style>
   @layer starlight.core {
@@ -66,13 +65,6 @@ const is404 = Astro.locals.starlightRoute?.id === "404";
       letter-spacing: -4px;
       color: var(--sl-color-white);
     }
-    .search-container {
-      width: 90%;
-      margin: auto;
-      border: 1px solid
-        color-mix(in srgb, var(--sl-color-white) 5%, transparent);
-    }
-
     .badges {
       background-color: color-mix(
         in srgb,
@@ -94,9 +86,6 @@ const is404 = Astro.locals.starlightRoute?.id === "404";
         line-height: 3.5rem !important;
         letter-spacing: -2px;
       }
-      .search-container {
-        width: 100%;
-      }
     }
   }
 </style>
@@ -104,12 +93,12 @@ const is404 = Astro.locals.starlightRoute?.id === "404";
   const iconElements = document.querySelector("[data-icon-path]");
   const heroSection = document.querySelector(".hero");
   const header = document.querySelector(".header");
-  const heroBG = document.querySelector(".hero-bg") as HTMLElement;
+  const heroBG = document.querySelector(".hero-bg") as HTMLElement | null;
 
   const totalHeight =
     (heroSection?.clientHeight || 0) + (header?.clientHeight || 0) + 24;
 
-  heroBG.style.height = `${totalHeight}px`;
+  if (heroBG) heroBG.style.height = `${totalHeight}px`;
 
   // make image element and add the path to src
   if (iconElements) {

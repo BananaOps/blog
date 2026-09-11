@@ -36,6 +36,8 @@ export default defineConfig({
       locales,
       sidebar: sidebar.main || [],
       customCss: ["./src/styles/global.css"],
+      // Recherche désactivée : pas d'index Pagefind ni d'UI de recherche.
+      pagefind: false,
       components: {
         Head: "./src/components/override-components/Head.astro",
         Header: "./src/components/override-components/Header.astro",

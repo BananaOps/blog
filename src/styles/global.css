@@ -369,18 +369,6 @@ footer.bo-footer nav a:hover {
   background: var(--cream) !important;
 }
 
-/* ─── Search ────────────────────────────────────────────────────────────────── */
-site-search button,
-site-search button span,
-site-search button kbd {
-  color: var(--cloud) !important;
-  transition: color 0.2s;
-}
-site-search button:hover,
-site-search button:hover span {
-  color: var(--midnight) !important;
-}
-
 /* ─── Theme switch — on force le mode clair uniquement ──────────────────────── */
 starlight-theme-select {
   display: none !important;

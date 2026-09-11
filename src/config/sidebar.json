@@ -42,11 +42,11 @@
           "slug": "projects/cloudoff"
         },
         {
-          "label": "🔄 Skopeo",
+          "label": "🔄 Scope",
           "translations": {
-            "fr": "🔄 Skopeo"
+            "fr": "🔄 Scope"
           },
-          "slug": "projects/skopeo"
+          "slug": "projects/scope"
         },
         {
           "label": "📅 Offly",

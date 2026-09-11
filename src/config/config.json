@@ -9,7 +9,7 @@
   },
 
   "settings": {
-    "search": true,
+    "search": false,
     "theme_switcher": false
   },
 

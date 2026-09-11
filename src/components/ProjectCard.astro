@@ -6,15 +6,26 @@ interface Props {
   description: string;
   link: string;
   icon: string;
-  gradient: string;
-  iconType?: 'emoji' | 'fontawesome';
+  gradient?: string;
+  iconType?: 'emoji' | 'fontawesome' | 'image';
 }
 
-const { title, description, link, icon, gradient, iconType = 'emoji' } = Astro.props;
+const { title, description, link, icon, gradient = '', iconType = 'emoji' } = Astro.props;
 ---
 
 <div class="project-card">
-  {iconType === 'fontawesome' ? (
+  {iconType === 'image' ? (
+    <img
+      class="project-icon-img"
+      src={icon}
+      alt=""
+      aria-hidden="true"
+      width="56"
+      height="56"
+      loading="lazy"
+      decoding="async"
+    />
+  ) : iconType === 'fontawesome' ? (
     <ProjectIcon icon={icon} gradient={gradient} />
   ) : (
     <div class="project-icon" style={`background: ${gradient}`}>
@@ -59,6 +70,30 @@ const { title, description, link, icon, gradient, iconType = 'emoji' } = Astro.p
     font-size: 1.75rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     flex-shrink: 0;
+  }
+
+  .project-icon-img {
+    width: 3.5rem;
+    height: 3.5rem;
+    min-height: 3.5rem;
+    border-radius: 0.75rem;
+    display: block;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(16, 38, 74, 0.18);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .project-card:hover .project-icon-img {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(16, 38, 74, 0.25);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-icon-img,
+    .project-card:hover .project-icon-img {
+      transition: none;
+      transform: none;
+    }
   }
 
   .icon-emoji {

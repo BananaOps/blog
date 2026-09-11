@@ -358,3 +358,9 @@ All commands are run from the root of the project, from a terminal:
 ## 👀 Want to learn more?
 
 Check out [Starlight’s docs](https://starlight.astro.build/), read [the Astro documentation](https://docs.astro.build), or jump into the [Astro Discord server](https://astro.build/chat).
+
+## 🎨 Icons
+
+Tool icons live in `public/icons/` and are copied from `bananaops-icons/<tool>/svg/<tool>-icon.svg`.
+
+Icône fusée (`tracker`, `tracker-slack`) : Font Awesome Free 7.3.1 (CC BY 4.0) — https://fontawesome.com

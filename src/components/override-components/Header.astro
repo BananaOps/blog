@@ -4,7 +4,6 @@
  * Fidèle à la maquette Home.dc.html :
  *   logo SVG + wordmark | nav : Tools · Documentation · GitHub ↗
  */
-import Search from "./Search.astro";
 import LanguageSelect from "@astrojs/starlight/components/LanguageSelect.astro";
 
 const hasSidebar = Astro.locals.starlightRoute.hasSidebar;
@@ -36,12 +35,6 @@ const locale = Astro.currentLocale || "en";
       <a href="#tools" class="bo-header__link">Tools</a>
       <a href="https://docs.bananaops.tech" class="bo-header__link">Documentation</a>
       <a href="https://github.com/BananaOps" class="bo-header__link bo-header__link--ext" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
-
-      {hasSidebar && (
-        <div class="bo-header__search">
-          <Search />
-        </div>
-      )}
 
       {!hasSidebar && <LanguageSelect />}
     </nav>
@@ -136,10 +129,6 @@ const locale = Astro.currentLocale || "en";
   .bo-header__link--ext:hover {
     color: var(--midnight);
   }
-  .bo-header__search {
-    margin-left: 8px;
-  }
-
   /* ─── Hamburger ──────────────────────────────────────────────────────────── */
   .bo-header__hamburger {
     display: none;

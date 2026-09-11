@@ -7,6 +7,10 @@ on:
     branches: [ main ]
   # Vous permet d'exécuter ce workflow manuellement à partir de l'onglet Actions sur GitHub.
   workflow_dispatch:
+  # Rebuild quotidien : les versions et licences des cartes projet sont lues
+  # sur l'API GitHub au build, ce cron les garde à jour sans commit.
+  schedule:
+    - cron: '0 6 * * *'
 
 # Autoriser cette tâche à cloner le dépôt et à créer un déploiement de page
 permissions:
@@ -25,6 +29,10 @@ jobs:
         with:
           path: .
           node-version: 20
+        env:
+          # Relève la limite de l'API GitHub de 60 à 5000 requêtes/heure
+          # pendant le build (src/lib/github.ts).
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy:
     needs: build
