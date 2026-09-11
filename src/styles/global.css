@@ -77,10 +77,19 @@ body {
 }
 
 /* ─── Navbar ────────────────────────────────────────────────────────────────── */
+/* Le sélecteur d'élément `header` touchait aussi notre <header class="bo-header">
+   imbriqué dans celui de Starlight : les deux traçaient un trait, d'où une barre
+   qui semblait doublée. Le trait appartient désormais au seul .bo-header (voir
+   override-components/Header.astro), qui est l'élément sticky donc le bon
+   porteur de la séparation. */
 .header,
 header,
 .sl-flex.header {
   background: var(--cream) !important;
+  border-bottom: none !important;
+}
+
+.bo-header {
   border-bottom: 1px solid rgba(16, 38, 74, 0.10) !important;
 }
 
