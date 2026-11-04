@@ -1,174 +1,199 @@
 ---
-title: 🍩 Homer-k8s
-description: Dashboard Homer optimisé pour Kubernetes
+title: Homer-k8s
+description: Kubernetes controller that generates a Homer dashboard from CRDs
 ---
 
 import { Card, Tabs, TabItem, Steps } from '@astrojs/starlight/components';
 
-Dashboard Homer optimisé pour Kubernetes. Centralisez l'accès à tous vos services K8s dans une interface élégante et intuitive.
+[Homer](https://github.com/bastienwirtz/homer) is a static home page that gathers
+links to your services, described in a single YAML file. **Homer-k8s** is the
+Kubernetes controller that makes that page dynamic: you declare your services in
+CRDs, and Homer's configuration is regenerated and reloaded on every change.
 
-## Fonctionnalités
 
-- **Configuration automatique** : Découverte automatique via CRD Kubernetes
-- **Interface élégante** : Dashboard Homer moderne et responsive
-- **Multi-cluster** : Gérez plusieurs clusters depuis un seul dashboard
-- **Recherche rapide** : Trouvez vos services instantanément
-- **Thèmes personnalisables** : Mode clair/sombre et thèmes custom
-- **Groupes intelligents** : Organisation automatique par namespace/labels
+| | |
+| --- | --- |
+| **Role** | Kubernetes controller generating a Homer dashboard from CRDs |
+| **Stack** | Go · controller-runtime |
+| **License** | Apache-2.0 |
+| **Image** | `bananaops/homer-k8s` |
+| **Helm chart** | `bananaops.github.io/homer-k8s/` |
+| **Repository** | [BananaOps/homer-k8s](https://github.com/BananaOps/homer-k8s) · [releases](https://github.com/BananaOps/homer-k8s/releases) |
+
+## Features
+
+- **`HomerServices` CRDs** to declare services from your manifests
+- **Helm chart** that deploys Homer and its controller
+- **Homer configuration in the chart values**
+- **EC2 discovery**: automatically adds a page listing your AWS instances
+- **Multi-architecture**: amd64 and arm64
+- **Smart cards**: support for Homer's custom services
+
+## Prerequisites
+
+- A Kubernetes cluster and [Helm](https://helm.sh/)
+- To work on the code: [Go](https://go.dev/) 1.22+ and [ko-build](https://ko.build/)
 
 ## Installation
 
-### Via Helm
-
 ```bash
-helm repo add bananaops https://charts.bananaops.tech
-helm repo update
-helm install homer-k8s bananaops/homer-k8s
+helm repo add bananaops https://bananaops.github.io/homer-k8s/
+helm repo update bananaops
+
+# Install with default values
+helm install homer bananaops/homer-k8s
 ```
 
-### Via kubectl
+To customise:
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BananaOps/homer-k8s/main/deploy/kubernetes.yaml
+wget https://raw.githubusercontent.com/bananaops/homer-k8s/main/helm/homer-k8s/values.yaml
+# edit values.yaml
+helm install homer bananaops/homer-k8s -f values.yaml
 ```
+
+## Declaring services
+
+The services shown on the dashboard are described by `HomerServices` resources.
+Each group becomes a section of the page.
+
+```yaml
+apiVersion: homer.bananaops.io/v1alpha1
+kind: HomerServices
+metadata:
+  labels:
+    app.kubernetes.io/name: homer-k8s
+  name: homerservices-sample
+spec:
+  groups:
+    - name: ci
+      icon: "fas fa-code-branch"
+      items:
+        - name: "Awesome app"
+          logo: "assets/tools/sample.png"
+          icon: "fab fa-jenkins"
+          subtitle: "Bookmark example"
+          tag: "app"
+          tagstyle: "is-success"
+          keywords: "self hosted reddit"   # optional, used by search
+          url: "https://www.reddit.com/r/selfhosted/"
+          target: "_blank"                 # optional
+        - name: "Another one"
+          logo: "assets/tools/sample.png"
+          subtitle: "Another application"
+          tag: "app"
+          tagstyle: "is-success"
+          url: "#"
+```
+
+```bash
+kubectl apply -f homerservices-sample.yaml
+```
+
+The controller picks up the resource, regenerates the configuration and reloads Homer.
 
 ## Configuration
 
-### Custom Resource Definition (CRD)
-
-Homer-k8s utilise une CRD pour configurer automatiquement les services :
+### Helm values
 
 ```yaml
-apiVersion: homer.bananaops.tech/v1
-kind: DashboardItem
-metadata:
-  name: grafana
-  namespace: monitoring
-spec:
-  name: "Grafana"
-  subtitle: "Monitoring & Dashboards"
-  logo: "https://grafana.com/static/img/menu/grafana2.svg"
-  url: "https://grafana.example.com"
-  target: "_blank"
-  group: "Monitoring"
-  tags:
-    - monitoring
-    - metrics
+# values.yaml
+image:
+  repository: bananaops/homer-k8s
+  pullPolicy: IfNotPresent
+  tag: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+
+rbac:
+  create: true
+  scope: false          # true to restrict the controller to its namespace
+
+service:
+  type: ClusterIP
+  port: 8080
+
+ingress:
+  enabled: false
+  className: ""
+  hosts:
+    - host: homer-k8s.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+resources:
+  limits:
+    cpu: 250m
+    memory: 128Mi
 ```
 
-### Configuration Helm
+## EC2 discovery
 
-<Tabs>
-  <TabItem label="values.yaml">
-    ```yaml
-    # values.yaml
-    replicaCount: 2
-    
-    image:
-      repository: bananaops/homer-k8s
-      tag: "latest"
-    
-    ingress:
-      enabled: true
-      className: nginx
-      hosts:
-        - host: homer.example.com
-          paths:
-            - path: /
-              pathType: Prefix
-    
-    config:
-      title: "BananaOps Dashboard"
-      subtitle: "Kubernetes Services"
-      theme: dark
-      
-      discovery:
-        enabled: true
-        namespaces:
-          - default
-          - production
-          - staging
-        
-      groups:
-        - name: "Production"
-          filter:
-            namespace: production
-        - name: "Monitoring"
-          filter:
-            labels:
-              app.kubernetes.io/component: monitoring
-    ```
-  </TabItem>
-  <TabItem label="Installation">
-    ```bash
-    helm install homer-k8s bananaops/homer-k8s \
-      --values values.yaml \
-      --namespace homer \
-      --create-namespace
-    ```
-  </TabItem>
-</Tabs>
+This feature walks the AWS account and fills an `ec2.yml` page with, for each
+instance, its IP and a link to its page in the AWS console.
 
-## Découverte Automatique
+<Steps>
 
-Homer-k8s peut découvrir automatiquement vos services via annotations :
+1. **Create the IAM policy** allowing instances to be described
 
-```yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: grafana
-  namespace: monitoring
-  annotations:
-    homer.bananaops.tech/enabled: "true"
-    homer.bananaops.tech/name: "Grafana"
-    homer.bananaops.tech/group: "Monitoring"
-    homer.bananaops.tech/icon: "fas fa-chart-line"
-    homer.bananaops.tech/url: "https://grafana.example.com"
-spec:
-  # ... service spec
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Action": "ec2:DescribeInstances",
+         "Effect": "Allow",
+         "Resource": "*"
+       }
+     ]
+   }
+   ```
+
+2. **Enable the feature** in the values
+
+   ```yaml
+   env:
+     - name: HOMER_EC2_ENABLED
+       value: "true"
+   ```
+
+3. **Attach the IAM role** to the ServiceAccount (on EKS)
+
+   ```yaml
+   serviceAccount:
+     create: true
+     annotations:
+       eks.amazonaws.com/role-arn: arn:aws:iam::{{ AWS_ACCOUNT }}:role/{{ AWS_ROLE }}
+   ```
+
+</Steps>
+
+## Development
+
+```bash
+# Build (binary in bin/)
+skaffold build
+
+# Update generated manifests
+make manifest
+
+# Deploy to the current cluster (adjust skaffold.yaml first)
+skaffold run
 ```
 
-## Thèmes
+## Links
 
-Homer-k8s supporte plusieurs thèmes :
-
-<Card title="Thèmes Disponibles" icon="palette">
-  - **Default** : Thème Homer classique
-  - **Dark** : Mode sombre élégant
-  - **Nord** : Palette Nord
-  - **Catppuccin** : Thème Catppuccin
-  - **Custom** : Créez votre propre thème
-</Card>
-
-## Sécurité
-
-### RBAC
-
-Homer-k8s nécessite les permissions suivantes :
-
-```yaml
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: homer-k8s
-rules:
-  - apiGroups: [""]
-    resources: ["services", "ingresses"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: ["homer.bananaops.tech"]
-    resources: ["dashboarditems"]
-    verbs: ["get", "list", "watch"]
-```
-
-## Liens
-
-- [GitHub Repository](https://github.com/BananaOps/homer-k8s)
-- [Helm Chart](https://github.com/BananaOps/homer-k8s/tree/main/charts)
-- [Documentation](https://docs.bananaops.tech/homer-k8s)
-- [Exemples](https://github.com/BananaOps/homer-k8s/tree/main/examples)
+- [GitHub repository](https://github.com/BananaOps/homer-k8s)
+- [Releases](https://github.com/BananaOps/homer-k8s/releases)
+- [Docker image](https://hub.docker.com/r/bananaops/homer-k8s)
+- [Helm repository](https://bananaops.github.io/homer-k8s/)
+- [Homer, the upstream dashboard](https://github.com/bastienwirtz/homer)
 
 ## Support
 
-- [Issues GitHub](https://github.com/BananaOps/homer-k8s/issues)
-- [Discussions](https://github.com/BananaOps/homer-k8s/discussions)
+- [GitHub issues](https://github.com/BananaOps/homer-k8s/issues) — see the [help wanted](https://github.com/BananaOps/homer-k8s/labels/help%20wanted) issues
+- [Contribution guide](https://github.com/BananaOps/homer-k8s/blob/main/CONTRIBUTING.md)

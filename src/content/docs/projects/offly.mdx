@@ -1,174 +1,170 @@
 ---
-title: 📅 Offly
-description: Time off manager moderne et intuitif
+title: Offly
+description: Self-hosted time-off manager — team calendar, public holidays, export and SSO
 ---
 
 import { Card, Tabs, TabItem, Steps } from '@astrojs/starlight/components';
 
-Offly est un time off manager moderne et intuitif pour gérer les congés de votre équipe.
+**Offly** is a self-hosted time-off manager: a calendar grid per user and per team,
+public holidays by country, report export and optional SSO authentication. A single
+Docker image, no mandatory external dependency.
 
-## Fonctionnalités
 
-- **Gestion des congés** : Demandes et approbations simplifiées
-- **Calendrier d'équipe** : Visualisez les absences en un coup d'œil
-- **Types de congés** : Congés payés, RTT, maladie, etc.
-- **Notifications** : Alertes par email et Slack
-- **Rapports** : Statistiques et exports
+| | |
+| --- | --- |
+| **Role** | Self-hosted time-off manager: calendar, teams, public holidays |
+| **Stack** | Go · React · SQLite or MongoDB |
+| **License** | see the repository |
+| **Image** | `bananaops/offly` |
+| **Helm chart** | not published — chart available in `helm/` |
+| **Repository** | [BananaOps/offly](https://github.com/BananaOps/offly) · [releases](https://github.com/BananaOps/offly/releases) |
+
+## Features
+
+| Feature | Description |
+| --- | --- |
+| **Calendar grid** | Monthly view of time off per user and per team |
+| **Teams** | Group users into teams and track availability |
+| **Absence types** | Full day, morning only, afternoon only |
+| **Public holidays** | Managed per country |
+| **Quick search** | Instant search across users and teams |
+| **Presence view** | Real-time overview of who is in today |
+| **Export** | Time-off reports as CSV and PDF |
+| **Dark mode** | Full light and dark themes |
+| **SSO / OIDC** | Optional authentication through Dex (PKCE flow) |
+| **RBAC** | Role-based access control (`admin` / `user`) |
+
+## Tech stack
+
+| Layer | Technology |
+| --- | --- |
+| Backend | Go 1.26, gRPC, gRPC-Gateway, Protocol Buffers |
+| Frontend | React 18, TypeScript 5, Tailwind CSS 3, Vite 8 |
+| Database | SQLite (default) · MongoDB (optional) |
+| Authentication | Dex (OIDC/PKCE), JWT, JWKS |
+| Container | Docker (multi-stage, Alpine) |
 
 ## Installation
 
-### Via Helm
+<Tabs>
+<TabItem label="Docker">
 
 ```bash
-helm repo add bananaops https://charts.bananaops.tech
-helm repo update
-helm install offly bananaops/offly --namespace offly --create-namespace
+# In-memory storage, no database required
+docker run -p 8080:8080 bananaops/offly:latest
+
+# With SQLite persistence
+docker run -p 8080:8080 \
+  -v $(pwd)/data:/app/data \
+  bananaops/offly:latest
 ```
 
-### Via kubectl
+</TabItem>
+<TabItem label="Docker Compose">
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BananaOps/offly/main/deploy/kubernetes.yaml
+git clone https://github.com/BananaOps/offly.git && cd offly
+docker-compose up -d
 ```
 
-## Démarrage Rapide
+The application is available at `http://localhost:8080`.
 
-<Steps>
+</TabItem>
+<TabItem label="Development">
 
-1. **Ajouter le repository Helm**
-   
-   ```bash
-   helm repo add bananaops https://charts.bananaops.tech
-   helm repo update
-   ```
+```bash
+git clone https://github.com/BananaOps/offly.git && cd offly
 
-2. **Créer un fichier de configuration**
-   
-   ```yaml
-   # values.yaml
-   replicaCount: 2
-   
-   image:
-     repository: bananaops/offly
-     tag: "latest"
-   
-   ingress:
-     enabled: true
-     className: nginx
-     hosts:
-       - host: offly.example.com
-         paths:
-           - path: /
-             pathType: Prefix
-   
-   config:
-     company:
-       name: "Mon Entreprise"
-       workingDays: 5
-     
-     leaveTypes:
-       - name: "Congés payés"
-         days: 25
-       - name: "RTT"
-         days: 10
-   
-   notifications:
-     email:
-       enabled: true
-     slack:
-       enabled: true
-   ```
+# Dependencies and protobuf code generation
+task setup
 
-3. **Installer avec Helm**
-   
-   ```bash
-   helm install offly bananaops/offly \
-     --values values.yaml \
-     --namespace offly \
-     --create-namespace
-   ```
+# Backend + frontend with hot reload
+task dev
+```
 
-4. **Vérifier le déploiement**
-   
-   ```bash
-   kubectl get pods -n offly
-   kubectl get ingress -n offly
-   ```
+| Service | URL |
+| --- | --- |
+| Web UI | `http://localhost:3000` |
+| REST API | `http://localhost:8080/api/v1` |
+| Swagger UI | `http://localhost:8080/docs` |
+| gRPC | `localhost:50051` |
 
-</Steps>
+Prerequisites: Go 1.26+, Node.js 24+, [Task](https://taskfile.dev), [Buf](https://buf.build), Docker.
+
+</TabItem>
+</Tabs>
+
+:::note
+The Helm chart lives in the repository (`helm/`) but is not yet published to a
+chart repository. In the meantime, install it from source or use the Docker image.
+:::
 
 ## Configuration
 
-### Types de congés
+| Variable | Description | Default |
+| --- | --- | --- |
+| `STORAGE_TYPE` | `sqlite` or `mongodb` | `sqlite` |
+| `SQLITE_DB_PATH` | SQLite database path | `/app/data/offly.db` |
+| `MONGO_URI` | MongoDB connection string | `mongodb://localhost:27017` |
+| `HTTP_PORT` | HTTP port | `8080` |
+| `GRPC_PORT` | gRPC port | `50051` |
+| `AUTH_ENABLED` | Enables SSO authentication | `false` |
+| `AUTH_ISSUER_URL` | OIDC issuer URL | — |
+| `AUTH_CLIENT_ID` | OIDC client ID | — |
 
-Configurez les types de congés selon vos besoins :
+## SSO authentication
 
-```yaml
-leaveTypes:
-  - name: "Congés payés"
-    days: 25
-    color: "#4facfe"
-  - name: "RTT"
-    days: 10
-    color: "#43e97b"
-  - name: "Maladie"
-    days: unlimited
-    color: "#f093fb"
-```
-
-## Utilisation
-
-### Interface Web
-
-Accédez à l'interface web via votre navigateur :
+Offly accepts an OIDC provider through [Dex](https://dexidp.io), using the PKCE flow:
 
 ```
-https://offly.example.com
+Browser ──PKCE──▶ Dex ──ID Token──▶ Backend ──JWT check──▶ SQLite
 ```
 
-### API
+| Role | Permissions |
+| --- | --- |
+| `admin` | Full access — users, teams, public holidays, time off |
+| `user` | Read everything · edit only their own profile and time off |
+
+The full guide is in [SSO-README.md](https://github.com/BananaOps/offly/blob/main/SSO-README.md).
+
+## API
+
+### REST — port 8080
+
+Interactive documentation at `http://localhost:8080/docs`.
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `GET` | `/api/v1/health` | Health check |
+| `GET` / `POST` | `/api/v1/users` | List / create users |
+| `GET` `PUT` `DELETE` | `/api/v1/users/{id}` | Read / update / delete a user |
+| `GET` / `POST` | `/api/v1/teams` | List / create teams |
+| `GET` / `POST` | `/api/v1/absences` | List / create time off |
+| `PUT` / `DELETE` | `/api/v1/absences/{id}` | Update / delete time off |
+| `GET` / `POST` | `/api/v1/holidays` | List / create public holidays |
+| `GET` | `/api/v1/auth/config` | SSO configuration |
+
+### gRPC — port 50051
+
+Exposed services: `AbsenceService`, `UserService`, `OrganizationService`, `HolidayService`.
+
+## Test dataset
 
 ```bash
-# Créer une demande de congé
-curl -X POST https://offly.example.com/api/v1/requests \
-  -H "Content-Type: application/json" \
-  -d '{
-    "type": "Congés payés",
-    "startDate": "2024-07-01",
-    "endDate": "2024-07-15",
-    "reason": "Vacances d'été"
-  }'
+# Requires k6 — see k6-README.md in the repository
+k6 run k6-seed-data.js
 ```
 
-## Cas d'Usage
+Creates 5 departments, 10 teams, 12 users, 29 public holidays and random time off.
 
-<Card title="PME" icon="rocket">
-  Gérez les congés de votre équipe simplement
-</Card>
+## Links
 
-<Card title="Remote Teams" icon="setting">
-  Coordonnez les absences dans des équipes distribuées
-</Card>
-
-<Card title="Conformité" icon="warning">
-  Respectez les obligations légales de gestion des congés
-</Card>
-
-## Intégrations
-
-Offly s'intègre avec :
-- **Slack** : Notifications et approbations
-- **Google Calendar** : Synchronisation des congés
-- **LDAP/AD** : Authentification d'entreprise
-- **Webhooks** : Intégration personnalisée
-
-## Liens
-
-- [GitHub Repository](https://github.com/BananaOps/offly)
-- [Documentation](https://docs.bananaops.tech/offly)
+- [GitHub repository](https://github.com/BananaOps/offly)
+- [Releases](https://github.com/BananaOps/offly/releases)
+- [Docker image](https://hub.docker.com/r/bananaops/offly)
+- [Docker guide](https://github.com/BananaOps/offly/blob/main/DOCKER.md) · [Quickstart](https://github.com/BananaOps/offly/blob/main/QUICKSTART.md)
 
 ## Support
 
-Besoin d'aide ? 
-- [Issues GitHub](https://github.com/BananaOps/offly/issues)
+- [GitHub issues](https://github.com/BananaOps/offly/issues)
 - [Discussions](https://github.com/BananaOps/offly/discussions)

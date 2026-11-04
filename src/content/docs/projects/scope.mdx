@@ -1,35 +1,45 @@
 ---
-title: 🔄 Scope
-description: Synchronisez vos Helm charts sur des registries OCI privés
+title: Scope
+description: Sync your Helm charts to private OCI registries
 ---
 
 import { Card, Tabs, TabItem, Steps } from '@astrojs/starlight/components';
 
-**Scope** — *Sync Chart On Private rEgistry* — est une CLI open source qui synchronise vos
-Helm charts vers des registries compatibles OCI comme Nexus, ECR, Docker Hub ou Scaleway
-Registry. Les sources à mirrorer sont décrites dans un simple fichier YAML.
+**Scope** — *Sync Chart On Private rEgistry* — is an open source CLI that syncs your
+Helm charts to OCI-compatible registries such as Nexus, ECR, Docker Hub or Scaleway
+Registry. The sources to mirror are described in a single YAML file.
 
-## Fonctionnalités
 
-- **Synchronisation automatique** : mirrorez vos charts Helm vers vos registries privés
-- **Multi-registries** : ECR, Nexus, Docker Hub, Scaleway Registry et autres registries OCI
-- **Gestion des versions** : choisissez précisément les versions à synchroniser
-- **Authentification** : utilisateur / mot de passe, ou mot de passe lu sur stdin
-- **Intégration CI** : pensée pour tourner dans un job planifié
-- **Logs détaillés** : suivez et diagnostiquez chaque synchronisation
+| | |
+| --- | --- |
+| **Role** | CLI that syncs Helm charts to private OCI registries |
+| **Stack** | Go · OCI · Helm |
+| **License** | Apache-2.0 |
+| **Image** | `bananaops/scope` |
+| **Helm chart** | — (command-line tool) |
+| **Repository** | [BananaOps/scope](https://github.com/BananaOps/scope) · [releases](https://github.com/BananaOps/scope/releases) |
 
-## Prérequis
+## Features
 
-- Un registry compatible OCI
-- Un repository créé sur le registry, au format `{{ registry }}/{{ namespace }}`
-  (ex : `rg.fr-par.scw.cloud/helm-mirrors`)
+- **Automatic sync**: mirror your Helm charts to your private registries
+- **Multiple registries**: ECR, Nexus, Docker Hub, Scaleway Registry and other OCI registries
+- **Version control**: pick exactly which versions to sync
+- **Authentication**: username / password, or password read from stdin
+- **CI integration**: designed to run in a scheduled job
+- **Detailed logs**: follow and troubleshoot every sync
+
+## Prerequisites
+
+- An OCI-compatible registry
+- A repository created on the registry, in the form `{{ registry }}/{{ namespace }}`
+  (e.g. `rg.fr-par.scw.cloud/helm-mirrors`)
 
 ## Installation
 
-### Binaire
+### Binary
 
-Téléchargez la dernière version depuis les
-[releases GitHub](https://github.com/BananaOps/scope/releases).
+Download the latest version from the
+[GitHub releases](https://github.com/BananaOps/scope/releases).
 
 ### Docker
 
@@ -37,17 +47,17 @@ Téléchargez la dernière version depuis les
 docker run bananaops/scope scope -h
 ```
 
-### Depuis les sources
+### From source
 
 ```bash
 go build -ldflags "-s -w" -o bin/scope
 ```
 
-## Démarrage Rapide
+## Quick start
 
 <Steps>
 
-1. **Décrire les charts à synchroniser**
+1. **Describe the charts to sync**
 
    ```yaml
    # scope_config.yml
@@ -65,19 +75,19 @@ go build -ldflags "-s -w" -o bin/scope
        - 2.0.1
    ```
 
-2. **Lancer la synchronisation**
+2. **Run the sync**
 
    ```bash
    scope -s scope_config.yml -r 000000000000.dkr.ecr.eu-west-3.amazonaws.com
    ```
 
-3. **Vérifier le résultat**
+3. **Check the result**
 
-   Les charts apparaissent dans le namespace du registry de destination.
+   The charts show up in the destination registry namespace.
 
 </Steps>
 
-## Options de la CLI
+## CLI options
 
 ```bash
 > scope -h
@@ -102,16 +112,16 @@ Flags:
   -u, --user string                chart destination repository user
 ```
 
-## Registries testés
+## Tested registries
 
-| Registry           | Testé | Version Scope |
-| ------------------ | ----- | ------------- |
-| AWS ECR            | ✅    | v0.0          |
-| Nexus              | ✅    | v0.2          |
-| Docker Hub         | ✅    | v0.4          |
-| Scaleway Registry  | ✅    | v0.4          |
+| Registry           | Tested | Scope version |
+| ------------------ | ------ | ------------- |
+| AWS ECR            | ✅     | v0.0          |
+| Nexus              | ✅     | v0.2          |
+| Docker Hub         | ✅     | v0.4          |
+| Scaleway Registry  | ✅     | v0.4          |
 
-## Intégration CI
+## CI integration
 
 ### GitLab CI
 
@@ -129,9 +139,9 @@ sync-charts:
       when: always
 ```
 
-## Mise à jour avec Renovate
+## Keeping it up to date with Renovate
 
-Renovate peut tenir le fichier de configuration à jour :
+Renovate can keep the configuration file up to date:
 
 ```json
 "packageRules": [
@@ -146,7 +156,7 @@ Renovate peut tenir le fichier de configuration à jour :
 ]
 ```
 
-Dans cet exemple, l'URL du registry doit inclure le protocole :
+In this example, the registry URL must include the protocol:
 
 ```yaml
 https://stakater.github.io/stakater-charts:
@@ -156,32 +166,31 @@ https://stakater.github.io/stakater-charts:
 ```
 
 :::note
-Limitation connue avec Renovate sur cet exemple : plusieurs versions d'un même chart ne
-sont pas gérées.
+Known limitation with Renovate in this example: multiple versions of the same chart
+are not handled.
 :::
 
-## Cas d'Usage
+## Use cases
 
-<Card title="Environnements air-gapped" icon="rocket">
-  Synchronisez vos charts vers des environnements isolés
+<Card title="Air-gapped environments" icon="rocket">
+  Sync your charts to isolated environments
 </Card>
 
 <Card title="Multi-cloud" icon="setting">
-  Distribuez vos charts sur plusieurs cloud providers
+  Distribute your charts across several cloud providers
 </Card>
 
 <Card title="Backup" icon="warning">
-  Sauvegardez vos charts critiques
+  Back up your critical charts
 </Card>
 
-## Liens
+## Links
 
-- [GitHub Repository](https://github.com/BananaOps/scope)
+- [GitHub repository](https://github.com/BananaOps/scope)
 - [Releases](https://github.com/BananaOps/scope/releases)
-- [Image Docker](https://hub.docker.com/r/bananaops/scope)
+- [Docker image](https://hub.docker.com/r/bananaops/scope)
 
 ## Support
 
-Besoin d'aide ?
-- [Issues GitHub](https://github.com/BananaOps/scope/issues)
+- [GitHub issues](https://github.com/BananaOps/scope/issues)
 - [Discussions](https://github.com/BananaOps/scope/discussions)

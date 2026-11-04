@@ -1,368 +1,182 @@
 ---
-title: 💲 Cloudoff
-description: Gestion intelligente des coûts cloud
+title: Cloudoff
+description: Scheduled stop and start of your EC2 instances, driven by tags
 ---
 
 import { Card, Tabs, TabItem, Steps } from '@astrojs/starlight/components';
 
-Réduisez vos coûts cloud en automatisant l'arrêt et le démarrage de vos ressources non-utilisées. Économisez sans effort.
+**Cloudoff** is a lightweight Go application that automates EC2 instance management
+to cut your AWS bill: stop at night, start in the morning, and terminate instances
+that have outlived their lifetime. Everything is driven by **EC2 tags** — no
+central configuration to maintain.
 
-## Fonctionnalités
 
-- **Planification intelligente** : Arrêt/démarrage automatique selon des horaires
-- **Multi-cloud** : Support AWS, GCP, Azure
-- **Détection automatique** : Identifie les ressources éligibles
-- **Économies estimées** : Calcul des économies potentielles
-- **Notifications** : Alertes avant arrêt/démarrage
-- **Exceptions** : Gestion des ressources critiques
-- **Dry-run** : Testez sans risque
+| | |
+| --- | --- |
+| **Role** | Stop, start and expire EC2 instances, driven by tags |
+| **Stack** | Go · AWS EC2 |
+| **License** | Apache-2.0 |
+| **Image** | `bananaops/cloudoff` |
+| **Helm chart** | `bananaops.github.io/cloudoff/` |
+| **Repository** | [BananaOps/cloudoff](https://github.com/BananaOps/cloudoff) · [releases](https://github.com/BananaOps/cloudoff/releases) |
+
+## Features
+
+- **Scheduled stop and start** of EC2 instances (for example, stop at night, start in the morning)
+- **Automatic cleanup** of instances once their TTL has expired
+- **Cost optimisation** by limiting the uptime of non-critical resources
+- **AWS best practices**: tag-based selection, IAM roles
+- **Prometheus metrics** through an optional `ServiceMonitor`
+
+## Prerequisites
+
+- Go 1.18+ (to build from source)
+- AWS credentials with EC2 management permissions (environment variables or IAM role)
+- Tagged EC2 instances (see below)
+
+## EC2 tags
+
+Cloudoff only manages instances that carry these tags. They are the heart of the
+configuration.
+
+| Tag | Example | Role |
+| --- | --- | --- |
+| `cloudoff:uptime` | `Mon-Fri 08:00-20:00 Europe/Paris` | Window during which the instance must run. The time zone is required. |
+| `cloudoff:downtime` | `Sat-Sun 00:00-23:59 Europe/Paris` | Window during which the instance must be stopped. Takes precedence over `uptime` when they overlap. |
+| `cloudoff:ttl` | `3d`, `12h` or `1w` | Instance lifetime. Units: `h` (hours), `d` (days), `w` (weeks). |
+
+:::caution
+The TTL starts when the instance's first network interface is attached. Once it
+has passed, the instance is considered expired and **eligible for termination** —
+not just a stop.
+:::
 
 ## Installation
 
-### Via Helm
+<Tabs>
+<TabItem label="Helm">
 
 ```bash
-helm repo add bananaops https://charts.bananaops.tech
-helm repo update
-helm install cloudoff bananaops/cloudoff --namespace cloudoff --create-namespace
+helm repo add bananaops-cloudoff https://bananaops.github.io/cloudoff/
+helm repo update bananaops-cloudoff
+
+helm install cloudoff bananaops-cloudoff/cloudoff \
+  --namespace cloudoff --create-namespace
 ```
 
-### Via kubectl
+</TabItem>
+<TabItem label="Docker">
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BananaOps/cloudoff/main/deploy/kubernetes.yaml
+docker run --rm \
+  -e AWS_REGION=eu-west-3 \
+  -e AWS_ACCESS_KEY_ID=... \
+  -e AWS_SECRET_ACCESS_KEY=... \
+  bananaops/cloudoff:latest
 ```
+
+</TabItem>
+<TabItem label="Source">
+
+```bash
+git clone https://github.com/bananaops/cloudoff.git
+cd cloudoff
+go build -o cloudoff
+./cloudoff
+```
+
+</TabItem>
+</Tabs>
 
 ## Configuration
 
-### Configuration Helm
+### Helm values
 
 ```yaml
 # values.yaml
-replicaCount: 1
-
 image:
   repository: bananaops/cloudoff
-  tag: "latest"
+  pullPolicy: IfNotPresent
+  tag: ""
 
-# CronJob pour exécution planifiée
-schedule: "0 * * * *"  # Toutes les heures
+serviceAccount:
+  create: true
+  annotations: {}       # put the IRSA annotation here on EKS
 
-config:
-  timezone: "Europe/Paris"
-  
-  # Planification simple
-  schedules:
-    weekdays:
-      stop: "19:00"
-      start: "08:00"
-    weekend:
-      stop: "friday 19:00"
-      start: "monday 08:00"
-  
-  # Providers cloud
-  providers:
-    aws:
-      enabled: true
-      regions:
-        - eu-west-1
-        - us-east-1
-      
-      resources:
-        ec2:
-          enabled: true
-          tags:
-            - key: "cloudoff:enabled"
-              value: "true"
-        
-        rds:
-          enabled: true
-          exclude:
-            - production-db
-        
-        eks:
-          enabled: false
-    
-    gcp:
-      enabled: false
-      project: "your-project-id"
-    
-    azure:
-      enabled: false
-      subscriptionId: "your-subscription-id"
-  
-  # Notifications
-  notifications:
-    slack:
-      enabled: true
-      webhook: ${SLACK_WEBHOOK}
-      channel: "#cloudoff"
-    
-    email:
-      enabled: true
-      recipients:
-        - ops@example.com
-  
-  dryRun: false
-
-# Credentials cloud via secrets
-cloudCredentials:
-  aws:
-    existingSecret: aws-credentials
-    accessKeyIdKey: access-key-id
-    secretAccessKeyKey: secret-access-key
-  
-  gcp:
-    existingSecret: gcp-credentials
-    serviceAccountKey: service-account.json
-  
-  azure:
-    existingSecret: azure-credentials
-    clientIdKey: client-id
-    clientSecretKey: client-secret
-    tenantIdKey: tenant-id
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
 
 resources:
   limits:
-    cpu: 500m
-    memory: 512Mi
+    cpu: 250m
+    memory: 128Mi
   requests:
     cpu: 250m
-    memory: 256Mi
+    memory: 128Mi
+
+prometheus:
+  monitor:
+    enabled: false      # set to true if Prometheus Operator is installed
 ```
 
-## Déploiement des Credentials
+### AWS authentication
 
-### AWS
+On EKS, the recommended approach is IRSA: create an IAM role with the required EC2
+permissions and annotate the ServiceAccount.
 
-```bash
-kubectl create secret generic aws-credentials \
-  --from-literal=access-key-id=YOUR_ACCESS_KEY \
-  --from-literal=secret-access-key=YOUR_SECRET_KEY \
-  --namespace cloudoff
+```yaml
+serviceAccount:
+  create: true
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::000000000000:role/cloudoff
 ```
 
-### GCP
+Outside EKS, Cloudoff reads the standard AWS credential chain: environment
+variables, profile, or instance role.
 
-```bash
-kubectl create secret generic gcp-credentials \
-  --from-file=service-account.json=./gcp-sa.json \
-  --namespace cloudoff
-```
-
-### Azure
-
-```bash
-kubectl create secret generic azure-credentials \
-  --from-literal=client-id=YOUR_CLIENT_ID \
-  --from-literal=client-secret=YOUR_CLIENT_SECRET \
-  --from-literal=tenant-id=YOUR_TENANT_ID \
-  --namespace cloudoff
-```
-
-## Utilisation
-
-### Via kubectl
-
-```bash
-# Voir les logs du CronJob
-kubectl logs -n cloudoff -l app=cloudoff
-
-# Déclencher manuellement un job
-kubectl create job --from=cronjob/cloudoff cloudoff-manual -n cloudoff
-
-# Voir les ressources gérées
-kubectl get configmap cloudoff-state -n cloudoff -o yaml
-```
-
-### Dashboard
-
-Cloudoff expose un dashboard web pour visualiser les économies :
-
-```bash
-# Port-forward vers le dashboard
-kubectl port-forward -n cloudoff svc/cloudoff-dashboard 8080:80
-
-# Accéder au dashboard
-open http://localhost:8080
-```
-
-## Exemples de Scénarios
-
-### Environnement de Développement
+## Usage
 
 <Steps>
 
-1. **Configuration**
-   
-   ```yaml
-   # values.yaml
-   config:
-     schedules:
-       weekdays:
-         stop: "19:00"
-         start: "08:00"
-       weekend: "off"
-     
-     providers:
-       aws:
-         resources:
-           ec2:
-             tags:
-               - key: "Environment"
-                 value: "dev"
-   ```
+1. **Tag the instances to manage**
 
-2. **Déploiement**
-   
    ```bash
-   helm install cloudoff bananaops/cloudoff \
-     --values values.yaml \
-     --namespace cloudoff
+   aws ec2 create-tags --resources i-0123456789abcdef0 \
+     --tags Key=cloudoff:uptime,Value="Mon-Fri 08:00-20:00 Europe/Paris"
    ```
 
-3. **Économies**
-   
-   - 13h/jour en semaine (19h-8h)
-   - 48h le weekend
-   - **Total : 113h/semaine** (67% du temps)
+2. **Deploy Cloudoff** in the target account or cluster (see Installation)
 
-4. **Résultat**
-   
-   Économies de **~67% sur ces ressources** 💰
+3. **Check the logs** to confirm the detected instances and scheduled actions
+
+   ```bash
+   kubectl logs -n cloudoff deployment/cloudoff
+   ```
 
 </Steps>
 
-### Intégration avec Kubernetes Autoscaling
-
-Cloudoff peut gérer les node pools Kubernetes :
-
-```yaml
-config:
-  providers:
-    aws:
-      resources:
-        eks:
-          enabled: true
-          nodeGroups:
-            - name: dev-workers
-              minSize: 0
-              schedule:
-                weekdays:
-                  stop: "19:00"  # Scale to 0
-                  start: "08:00"  # Restore original size
-```
-
-## Ressources Supportées
-
-### AWS
-- EC2 Instances
-- RDS Databases
-- ECS Services
-- Auto Scaling Groups
-- ElastiCache
-- Redshift Clusters
-
-### GCP
-- Compute Engine Instances
-- Cloud SQL
-- GKE Node Pools
-- Cloud Composer
-
-### Azure
-- Virtual Machines
-- SQL Databases
-- AKS Node Pools
-- App Services
-
-## Sécurité
-
-### RBAC Kubernetes
-
-```yaml
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: cloudoff
-rules:
-  - apiGroups: [""]
-    resources: ["configmaps", "secrets"]
-    verbs: ["get", "list", "create", "update"]
-```
-
-### Permissions Cloud
-
-<Card title="Permissions Minimales" icon="lock">
-  Cloudoff utilise le principe du moindre privilège :
-  - Lecture des ressources
-  - Start/Stop uniquement
-  - Pas de suppression
-  - Pas de modification
-</Card>
-
-**AWS IAM Policy :**
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ec2:DescribeInstances",
-        "ec2:StartInstances",
-        "ec2:StopInstances",
-        "rds:DescribeDBInstances",
-        "rds:StartDBInstance",
-        "rds:StopDBInstance"
-      ],
-      "Resource": "*",
-      "Condition": {
-        "StringEquals": {
-          "aws:ResourceTag/cloudoff:enabled": "true"
-        }
-      }
-    }
-  ]
-}
-```
-
-## Monitoring
-
-### Métriques Prometheus
-
-Cloudoff expose des métriques Prometheus :
-
-```yaml
-# ServiceMonitor pour Prometheus Operator
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: cloudoff
-  namespace: cloudoff
-spec:
-  selector:
-    matchLabels:
-      app: cloudoff
-  endpoints:
-    - port: metrics
-      interval: 30s
-```
-
-### Dashboard Grafana
+### Example windows
 
 ```bash
-# Importer le dashboard Cloudoff
-kubectl apply -f https://raw.githubusercontent.com/BananaOps/cloudoff/main/grafana/dashboard.json
+# Office hours, weekdays only
+cloudoff:uptime = "Mon-Fri 08:00-20:00 Europe/Paris"
+
+# Forced shutdown at weekends, even if uptime overlaps
+cloudoff:downtime = "Sat-Sun 00:00-23:59 Europe/Paris"
+
+# Ephemeral test environment, terminated after 3 days
+cloudoff:ttl = "3d"
 ```
 
-## Liens
+## Links
 
-- [GitHub Repository](https://github.com/BananaOps/cloudoff)
-- [Documentation](https://docs.bananaops.tech/cloudoff)
-- [Terraform Module](https://registry.terraform.io/modules/bananaops/cloudoff)
-- [Exemples](https://github.com/BananaOps/cloudoff/tree/main/examples)
+- [GitHub repository](https://github.com/BananaOps/cloudoff)
+- [Releases](https://github.com/BananaOps/cloudoff/releases)
+- [Docker image](https://hub.docker.com/r/bananaops/cloudoff)
+- [Helm repository](https://bananaops.github.io/cloudoff/)
 
 ## Support
 
-- [Issues GitHub](https://github.com/BananaOps/cloudoff/issues)
+- [GitHub issues](https://github.com/BananaOps/cloudoff/issues)
 - [Discussions](https://github.com/BananaOps/cloudoff/discussions)

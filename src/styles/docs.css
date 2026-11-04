@@ -1,0 +1,409 @@
+/* ============================================================================
+   Documentation — charte BananaOps (DESIGN.md v1, août 2026)
+   ----------------------------------------------------------------------------
+   Palette, typographie et règles d'usage reprises telles quelles de la charte :
+   Gabarito pour les titres, Space Grotesk pour le texte courant, fond Cream,
+   texte Midnight Ops, secondaire Cloud Blue, jaune en accent uniquement.
+
+   Règle de la charte appliquée partout ici : « le jaune ne porte jamais de
+   texte. Il sert de fond ou d'accent, le texte reste en Midnight Ops. »
+   Peel Deep est réservé aux états d'interaction.
+
+   Tout est porté par [data-has-sidebar], l'attribut posé par Starlight sur
+   <html> pour les pages à sidebar : la home n'est pas touchée.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Gabarito:wght@500;600;700;800&family=Space+Grotesk:wght@400;500;600&display=swap');
+
+[data-has-sidebar] {
+  /* ── Palette de la charte, section 3 ───────────────────────────────────── */
+  --doc-banana:    #FFC83D;
+  --doc-peel:      #E5A521;
+  --doc-midnight:  #10264A;
+  --doc-cloud:     #2E5288;
+  --doc-cream:     #FFF7E8;
+  --doc-stem:      #8A6A2E;
+
+  /* ── Rôles ─────────────────────────────────────────────────────────────── */
+  --doc-bg:            var(--doc-cream);
+  --doc-surface:       #FFFFFF;
+  --doc-surface-2:     #FFFCF3;
+  --doc-border:        rgba(16, 38, 74, 0.10);
+  --doc-border-strong: rgba(16, 38, 74, 0.18);
+  --doc-text:          var(--doc-midnight);
+  --doc-text-muted:    var(--doc-cloud);
+
+  /* ── Signaux ───────────────────────────────────────────────────────────
+     La charte ne définit pas de couleur d'alerte : l'attention passe par le
+     jaune, comme accent. Le rouge ci-dessous n'est pas dans la charte, il
+     n'existe que pour les encadrés « danger » — à valider ou à retirer. */
+  --doc-attention:  var(--doc-banana);
+  --doc-danger:     #B3401A;
+
+  /* ── Typographie, charte section 4 ─────────────────────────────────────── */
+  --doc-font-display: "Gabarito", "Trebuchet MS", system-ui, sans-serif;
+  --doc-font-body:    "Space Grotesk", system-ui, sans-serif;
+
+  --doc-fs-page:    30px;
+  --doc-fs-section: 19px;
+  --doc-fs-card:    16px;
+  --doc-fs-body:    15px;
+  --doc-fs-meta:    13px;
+
+  /* ── Espacement, grille 4 / 8 ──────────────────────────────────────────── */
+  --doc-1: 4px;  --doc-2: 8px;  --doc-3: 12px;
+  --doc-4: 16px; --doc-6: 24px; --doc-8: 32px; --doc-12: 48px;
+
+  --doc-radius:    10px;
+  --doc-radius-sm: 6px;
+  --doc-shadow:    0 1px 2px rgba(16, 38, 74, 0.05);
+
+  /* ── Report sur les variables Starlight ────────────────────────────────── */
+  --sl-color-bg:             var(--doc-bg);
+  --sl-color-bg-nav:         var(--doc-bg);
+  --sl-color-bg-sidebar:     var(--doc-bg);
+  --sl-color-text:           var(--doc-text);
+  --sl-color-white:          var(--doc-text);
+  --sl-color-gray-6:         var(--doc-text-muted);
+  --sl-color-hairline:       var(--doc-border);
+  --sl-color-hairline-light: var(--doc-border);
+  --sl-color-accent:         var(--doc-cloud);
+  --sl-color-accent-high:    var(--doc-midnight);
+  --sl-color-accent-low:     color-mix(in srgb, var(--doc-banana) 18%, var(--doc-cream));
+  --sl-color-text-accent:    var(--doc-cloud);
+  --sl-text-base:            var(--doc-fs-body);
+  --sl-line-height:          1.7;
+  --sl-content-width:        54rem;
+}
+
+[data-has-sidebar] body {
+  background: var(--doc-bg) !important;
+  color: var(--doc-text);
+  font-family: var(--doc-font-body);
+}
+
+/* ============================================================================
+   Contenu
+   ========================================================================== */
+
+[data-has-sidebar] .sl-markdown-content {
+  font-family: var(--doc-font-body);
+  font-size: var(--doc-fs-body);
+  line-height: 1.7;
+  color: var(--doc-text);
+}
+
+[data-has-sidebar] .content-panel h1 {
+  font-family: var(--doc-font-display);
+  font-size: var(--doc-fs-page);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--doc-text);
+  margin: 0 0 var(--doc-2);
+}
+
+[data-has-sidebar] .sl-markdown-content h2,
+[data-has-sidebar] .sl-markdown-content h3 {
+  font-family: var(--doc-font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--doc-text);
+  margin: 0;
+}
+
+[data-has-sidebar] .sl-markdown-content h2 { font-size: var(--doc-fs-section); line-height: 1.35; }
+[data-has-sidebar] .sl-markdown-content h3 { font-size: var(--doc-fs-card); }
+
+/* Starlight enveloppe chaque titre dans un .sl-heading-wrapper en flex : le
+   filet de section se pose sur l'enveloppe, sinon il s'arrête à la largeur
+   du texte. */
+[data-has-sidebar] .sl-markdown-content .sl-heading-wrapper.level-h2 {
+  margin-top: var(--doc-12);
+  padding-top: var(--doc-4);
+  border-top: 1px solid var(--doc-border);
+}
+
+[data-has-sidebar] .sl-markdown-content .sl-heading-wrapper.level-h3 {
+  margin-top: var(--doc-8);
+}
+
+[data-has-sidebar] .sl-markdown-content h4 {
+  font-family: var(--doc-font-body);
+  font-size: var(--doc-fs-meta);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--doc-text-muted);
+  margin-top: var(--doc-6);
+}
+
+[data-has-sidebar] .sl-markdown-content strong { font-weight: 600; }
+
+/* Liens : Cloud Blue, « éléments d'interface » de la charte. */
+[data-has-sidebar] .sl-markdown-content a:not(:where(.not-content *)) {
+  color: var(--doc-cloud);
+  text-decoration-color: color-mix(in srgb, var(--doc-cloud) 35%, transparent);
+  text-underline-offset: 3px;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+[data-has-sidebar] .sl-markdown-content a:not(:where(.not-content *)):hover {
+  color: var(--doc-midnight);
+  text-decoration-color: var(--doc-midnight);
+}
+
+/* ── Tableaux ───────────────────────────────────────────────────────────── */
+[data-has-sidebar] .sl-markdown-content table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--doc-border);
+  border-radius: var(--doc-radius);
+  overflow: hidden;
+  background: var(--doc-surface);
+  font-size: var(--doc-fs-meta);
+  box-shadow: var(--doc-shadow);
+}
+
+[data-has-sidebar] .sl-markdown-content th {
+  background: var(--doc-surface-2);
+  font-family: var(--doc-font-body);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--doc-text-muted);
+  text-align: left;
+  padding: var(--doc-2) var(--doc-3);
+  border-bottom: 1px solid var(--doc-border);
+}
+
+[data-has-sidebar] .sl-markdown-content td {
+  padding: var(--doc-3);
+  border-bottom: 1px solid var(--doc-border);
+  vertical-align: top;
+  font-variant-numeric: tabular-nums;
+}
+
+[data-has-sidebar] .sl-markdown-content tbody tr:last-child td { border-bottom: none; }
+[data-has-sidebar] .sl-markdown-content tbody tr:hover td { background: var(--doc-surface-2); }
+
+/* ── Fiche d'identité en tête de page ────────────────────────────────────
+   Markdown produit toujours un <thead> ; celui de la fiche est vide, on le
+   retire et on fixe la colonne des libellés. */
+[data-has-sidebar] .sl-markdown-content thead:has(th:empty) { display: none; }
+
+[data-has-sidebar] .sl-markdown-content table:has(th:empty) td:first-child {
+  width: 13rem;
+  color: var(--doc-text-muted);
+  font-weight: 600;
+  background: var(--doc-surface-2);
+}
+
+[data-has-sidebar] .sl-markdown-content table:has(th:empty) {
+  margin-bottom: var(--doc-8);
+  /* Le seul accent jaune de la page : un filet, sans texte posé dessus. */
+  border-left: 3px solid var(--doc-banana);
+}
+
+/* ── Code ───────────────────────────────────────────────────────────────── */
+[data-has-sidebar] .sl-markdown-content :not(pre) > code {
+  background: var(--doc-surface-2);
+  border: 1px solid var(--doc-border);
+  border-radius: var(--doc-radius-sm);
+  padding: 1px 5px;
+  font-size: 0.9em;
+  color: var(--doc-text);
+}
+
+[data-has-sidebar] .expressive-code .frame { border-radius: var(--doc-radius); box-shadow: var(--doc-shadow); }
+[data-has-sidebar] .expressive-code pre {
+  border: 1px solid var(--doc-border-strong) !important;
+  border-radius: var(--doc-radius) !important;
+}
+
+/* ── Encadrés : filet coloré sur surface claire, jamais un bloc teinté ──── */
+[data-has-sidebar] .starlight-aside {
+  border: 1px solid var(--doc-border);
+  border-left: 3px solid var(--doc-cloud);
+  border-radius: 0 var(--doc-radius) var(--doc-radius) 0;
+  background: var(--doc-surface);
+  padding: var(--doc-4) var(--doc-6);
+}
+[data-has-sidebar] .starlight-aside--tip     { border-left-color: var(--doc-banana); }
+[data-has-sidebar] .starlight-aside--caution { border-left-color: var(--doc-peel); }
+[data-has-sidebar] .starlight-aside--danger  { border-left-color: var(--doc-danger); }
+
+[data-has-sidebar] .starlight-aside__title {
+  font-family: var(--doc-font-body);
+  font-size: var(--doc-fs-meta);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--doc-text-muted);
+}
+[data-has-sidebar] .starlight-aside__content {
+  color: var(--doc-text);
+  font-size: var(--doc-fs-body);
+}
+
+/* ── Onglets d'installation ─────────────────────────────────────────────── */
+[data-has-sidebar] starlight-tabs .tablist-wrapper ul { border-bottom: 1px solid var(--doc-border); }
+[data-has-sidebar] starlight-tabs [role="tab"] {
+  font-family: var(--doc-font-body);
+  font-size: var(--doc-fs-meta);
+  font-weight: 600;
+  color: var(--doc-text-muted);
+  padding-bottom: var(--doc-2);
+}
+[data-has-sidebar] starlight-tabs [role="tab"][aria-selected="true"] {
+  color: var(--doc-midnight);
+  /* L'onglet actif est le seul accent jaune du composant. */
+  border-color: var(--doc-banana);
+}
+
+/* ── Cartes et étapes ───────────────────────────────────────────────────── */
+[data-has-sidebar] .sl-markdown-content .card {
+  background: var(--doc-surface);
+  border: 1px solid var(--doc-border);
+  border-radius: var(--doc-radius);
+  box-shadow: var(--doc-shadow);
+  padding: var(--doc-6);
+}
+[data-has-sidebar] .sl-markdown-content .card .title {
+  font-family: var(--doc-font-display);
+  font-weight: 700;
+  color: var(--doc-text);
+}
+
+[data-has-sidebar] .sl-steps > li::before {
+  background: color-mix(in srgb, var(--doc-banana) 22%, var(--doc-cream)) !important;
+  color: var(--doc-midnight) !important;
+  border: 1px solid var(--doc-border) !important;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================================
+   Shell de documentation
+   ----------------------------------------------------------------------------
+   Reprend la main sur PageFrame (dans @layer starlight.core, donc perdant face
+   à du non-layerisé) et sur global.css (!important sur sélecteur d'élément nu,
+   battu par une spécificité supérieure).
+   ========================================================================== */
+
+[data-has-sidebar] .page        { background: var(--doc-bg); }
+[data-has-sidebar] .sidebar-pane { background-color: var(--doc-bg); }
+
+[data-has-sidebar] header.header,
+[data-has-sidebar] header.bo-header {
+  background: var(--doc-bg) !important;
+  border-bottom: 1px solid var(--doc-border) !important;
+}
+[data-has-sidebar] header.header { border-bottom: none !important; }
+
+[data-has-sidebar] .bo-header__link {
+  font-family: var(--doc-font-body);
+  font-size: var(--doc-fs-meta);
+  color: var(--doc-text-muted);
+}
+[data-has-sidebar] .bo-header__link:hover { color: var(--doc-text); }
+
+/* Wordmark de la charte : Gabarito, banana en 800 Midnight, ops en 500 Cloud Blue. */
+[data-has-sidebar] .bo-header__wordmark {
+  font-family: var(--doc-font-display);
+  letter-spacing: -0.02em;
+}
+[data-has-sidebar] .bo-header__wordmark-bold  { font-weight: 800; color: var(--doc-midnight); }
+[data-has-sidebar] .bo-header__wordmark-light { font-weight: 500; color: var(--doc-cloud); }
+
+[data-has-sidebar] .sidebar-nav {
+  background: var(--doc-bg);
+  border-bottom: 1px solid var(--doc-border) !important;
+}
+
+[data-has-sidebar] .bo-footer {
+  background: var(--doc-bg);
+  border-top-color: var(--doc-border);
+}
+
+[data-has-sidebar] .breadcrumb,
+[data-has-sidebar] .right-sidebar-panel h2 {
+  font-family: var(--doc-font-body);
+  font-size: var(--doc-fs-meta);
+  color: var(--doc-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ── Navigation latérale ────────────────────────────────────────────────── */
+[data-has-sidebar] .sidebar-content { font-family: var(--doc-font-body); font-size: var(--doc-fs-meta); }
+
+[data-has-sidebar] .sidebar-content a {
+  border-radius: var(--doc-radius-sm);
+  padding: var(--doc-1) var(--doc-2);
+  color: var(--doc-text-muted);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+[data-has-sidebar] .sidebar-content a:hover {
+  background: var(--doc-surface-2);
+  color: var(--doc-text);
+}
+/* Page courante : fond jaune très dilué, texte Midnight — jamais de texte
+   posé sur l'aplat jaune plein. */
+[data-has-sidebar] .sidebar-content a[aria-current="page"] {
+  background: color-mix(in srgb, var(--doc-banana) 20%, var(--doc-cream));
+  color: var(--doc-midnight);
+  font-weight: 600;
+}
+
+[data-has-sidebar] starlight-toc a {
+  font-size: 12.5px;
+  color: var(--doc-text-muted);
+  border-left: 2px solid transparent;
+  padding-left: var(--doc-3);
+}
+[data-has-sidebar] starlight-toc a[aria-current="true"] {
+  color: var(--doc-midnight);
+  border-left-color: var(--doc-banana);
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-has-sidebar] * { transition: none !important; animation: none !important; }
+}
+
+/* ============================================================================
+   Liste des projets : logos plutôt qu'emoji
+   ----------------------------------------------------------------------------
+   Les libellés de la sidebar viennent de sidebar.json, qui n'accepte que du
+   texte — pas de balise. Le logo est donc posé en ::before, piloté par une
+   variable réglée selon la cible du lien. Ça vaut pour les deux langues :
+   le sélecteur teste la fin de l'URL, donc /projects/….
+
+   Portée .sidebar-pane .sidebar-content : la navigation horizontale du haut
+   pointe elle aussi vers /projects/tracker/, mais vit dans .sidebar-nav et
+   n'est donc pas touchée.
+   ========================================================================== */
+
+[data-has-sidebar] .sidebar-pane .sidebar-content a[href*="/projects/"] {
+  display: flex;
+  align-items: center;
+  gap: var(--doc-2);
+}
+
+[data-has-sidebar] .sidebar-pane .sidebar-content a[href*="/projects/"]::before {
+  content: "";
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  background: center / contain no-repeat var(--doc-project-logo, none);
+}
+
+[data-has-sidebar] .sidebar-pane .sidebar-content a[href$="/projects/tracker/"]       { --doc-project-logo: url("/icons/tracker.svg"); }
+[data-has-sidebar] .sidebar-pane .sidebar-content a[href$="/projects/homer-k8s/"]     { --doc-project-logo: url("/icons/homer-k8s.svg"); }
+[data-has-sidebar] .sidebar-pane .sidebar-content a[href$="/projects/cloudoff/"]      { --doc-project-logo: url("/icons/cloudoff.svg"); }
+[data-has-sidebar] .sidebar-pane .sidebar-content a[href$="/projects/scope/"]         { --doc-project-logo: url("/icons/scope.svg"); }
+/* Offly n'a pas encore d'icône dans bananaops-icons : badge de marque en
+   attendant, pour que la liste reste alignée. */
+[data-has-sidebar] .sidebar-pane .sidebar-content a[href$="/projects/offly/"]         { --doc-project-logo: url("/icons/bananaops.svg"); }

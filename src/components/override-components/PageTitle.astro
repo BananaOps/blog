@@ -1,0 +1,45 @@
+---
+/**
+ * PageTitle.astro — Override Starlight
+ *
+ * Les pages projet portent le logo de l'outil devant leur titre, à la place
+ * de l'emoji qu'elles affichaient avant. Le logo vient de public/icons, alimenté
+ * par bananaops-icons ; les pages sans logo dédié gardent un titre seul.
+ */
+import { projectLogo } from '../../lib/projects';
+
+// Starlight n'exporte pas ses constantes : l'ancre du titre est "_top",
+// valeur de PAGE_TITLE_ID, utilisée par le lien « Skip to content ».
+
+const { entry, id } = Astro.locals.starlightRoute;
+const logo = projectLogo(id);
+---
+
+<div class="page-title">
+  {logo && <img src={logo} alt="" aria-hidden="true" width="40" height="40" class="page-title__logo" />}
+  <h1 id="_top">{entry.data.title}</h1>
+</div>
+
+<style>
+  .page-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .page-title__logo {
+    width: 40px;
+    height: 40px;
+    flex: none;
+    border-radius: 11px;
+    display: block;
+  }
+
+  @media (max-width: 50em) {
+    .page-title__logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+    }
+  }
+</style>

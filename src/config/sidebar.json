@@ -1,74 +1,40 @@
 {
   "main": [
     {
-      "label": "Accueil",
-      "translations": {
-        "fr": "Accueil"
-      },
+      "label": "Home",
       "slug": "index"
     },
     {
-      "label": "Projets",
-      "translations": {
-        "fr": "Projets"
-      },
+      "label": "Projects",
       "items": [
         {
-          "label": "🚀 Tracker",
-          "translations": {
-            "fr": "🚀 Tracker"
-          },
+          "label": "Tracker",
           "slug": "projects/tracker"
         },
         {
-          "label": "💬 Tracker-Slack",
-          "translations": {
-            "fr": "💬 Tracker-Slack"
-          },
-          "slug": "projects/tracker-slack"
-        },
-        {
-          "label": "🍩 Homer-k8s",
-          "translations": {
-            "fr": "🍩 Homer-k8s"
-          },
+          "label": "Homer-k8s",
           "slug": "projects/homer-k8s"
         },
         {
-          "label": "💲 Cloudoff",
-          "translations": {
-            "fr": "💲 Cloudoff"
-          },
+          "label": "Cloudoff",
           "slug": "projects/cloudoff"
         },
         {
-          "label": "🔄 Scope",
-          "translations": {
-            "fr": "🔄 Scope"
-          },
+          "label": "Scope",
           "slug": "projects/scope"
         },
         {
-          "label": "📅 Offly",
-          "translations": {
-            "fr": "📅 Offly"
-          },
+          "label": "Offly",
           "slug": "projects/offly"
         }
       ]
     },
     {
       "label": "Documentation",
-      "translations": {
-        "fr": "Documentation"
-      },
       "slug": "docs/quick-start"
     },
     {
-      "label": "Contribuer",
-      "translations": {
-        "fr": "Contribuer"
-      },
+      "label": "Contributing",
       "slug": "docs/contributing"
     }
   ]

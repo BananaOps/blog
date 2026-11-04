@@ -10,6 +10,7 @@
  */
 import ToolCard from './ToolCard.astro';
 import { getRepoInfo, withRepoInfo } from '../lib/github';
+import { logoFor } from '../lib/projects';
 
 const tools = [
   {
@@ -48,12 +49,22 @@ const tools = [
     license: 'Apache-2.0',
     status: 'beta' as const,
   },
+  {
+    toolName: 'offly',
+    repo: 'offly',
+    desc: 'Self-hosted time-off manager: team calendar grid, public holidays by country, CSV/PDF export and optional SSO.',
+    stack: 'Go · React · SQLite',
+    version: 'v1.1.0',
+    license: 'Apache-2.0',
+    status: 'beta' as const,
+  },
 ];
 
 const toolCards = await Promise.all(
   tools.map(async (tool) => ({
     ...withRepoInfo(tool, await getRepoInfo(tool.repo)),
-    docsHref: `https://docs.bananaops.tech/${tool.toolName}`,
+    icon: logoFor(tool.toolName),
+    docsHref: `/projects/${tool.toolName}/`,
     repoHref: `https://github.com/BananaOps/${tool.repo}`,
   }))
 );
@@ -67,13 +78,13 @@ const toolCards = await Promise.all(
       <span class="bo-hero__eyebrow">Open-source platform tooling</span>
       <h1 class="bo-hero__title">Let's make DevOps simpler, practical and energizing.</h1>
       <p class="bo-hero__sub">
-        Four Go tools for people who run platforms: deployment tracking, EC2 night shutdown,
-        chart registry sync and a generated cluster dashboard.
+        Five Go tools for people who run platforms: deployment tracking, EC2 night shutdown,
+        chart registry sync, a generated cluster dashboard and a time-off manager.
         Documentation lives here, next to the source.
       </p>
       <div class="bo-hero__cta">
         <a href="#tools" class="bo-btn-primary">Browse the tools</a>
-        <a href="https://docs.bananaops.tech" class="bo-btn-outline">Read the docs</a>
+        <a href="/docs/quick-start/" class="bo-btn-outline">Read the docs</a>
       </div>
     </div>
     <svg
@@ -116,6 +127,7 @@ const toolCards = await Promise.all(
       {toolCards.map((tool) => (
         <ToolCard
           toolName={tool.toolName}
+          icon={tool.icon}
           desc={tool.desc}
           stack={tool.stack}
           version={tool.version}

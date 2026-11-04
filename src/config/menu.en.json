@@ -2,11 +2,11 @@
   "main": [
     {
       "name": "Tools",
-      "url": "#tools"
+      "url": "/#tools"
     },
     {
       "name": "Documentation",
-      "url": "https://docs.bananaops.tech"
+      "url": "/docs/quick-start/"
     },
     {
       "name": "GitHub ↗",

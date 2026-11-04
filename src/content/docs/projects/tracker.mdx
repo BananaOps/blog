@@ -1,308 +1,216 @@
 ---
-title: 🚀 Tracker
-description: Suivez tous les changements dans vos environnements de production
+title: Tracker
+description: Event tracking and observability for your platforms — deployments, incidents, drift, service catalog and distributed locks
 ---
 
 import { Card, Tabs, TabItem, Steps } from '@astrojs/starlight/components';
 
-Tracker est un outil puissant pour suivre et monitorer tous les changements dans vos environnements de production.
+**Tracker** is an open source event tracking platform for distributed systems. It
+centralises deployments, operations, incidents and configuration drift, keeps an
+inventory of your services and coordinates concurrent operations through
+distributed locks. Web UI, REST API and gRPC.
 
-## Fonctionnalités
 
-### 🎯 Event Management
+| | |
+| --- | --- |
+| **Role** | Event tracking: deployments, incidents, drift, catalog, locks |
+| **Stack** | Go · MongoDB · React |
+| **License** | Apache-2.0 |
+| **Image** | `bananaops/tracker` |
+| **Helm chart** | `bananaops.github.io/tracker/` |
+| **Repository** | [BananaOps/tracker](https://github.com/BananaOps/tracker) · [releases](https://github.com/BananaOps/tracker/releases) |
 
-- **Multiple Event Types** : Deployments, Operations, Drifts, Incidents, RPA Usage
-- **Rich Metadata** : Priority, Status, Environment, Owner, Impact tracking
-- **Linking** : Connect events to PRs, tickets, and related events
-- **Search & Filter** : Powerful search across all event attributes
-- **Timeline View** : Visualize events chronologically
-- **Calendar View** : See events in a calendar format
+## Features
 
-### 📦 Service Catalog
+### Event management
+- **Multiple types**: deployments, operations, drift, incidents, RPA runs
+- **Rich metadata**: priority, status, environment, owner, impact
+- **Links**: attach an event to a pull request, a ticket or another event
+- **Views**: timeline, monthly calendar, Gantt chart with overlap detection
+- **Insights**: event breakdown and trends over a configurable period
 
-- **Inventory Management** : Track modules, libraries, projects, containers
-- **Version Tracking** : Monitor versions across your infrastructure
-- **Multi-Language** : Support for Go, Java, Python, JavaScript, and more
-- **Repository Links** : Direct links to GitHub/GitLab repositories
-- **Documentation** : Link to service documentation
+### Service catalog
+- Inventory of modules, libraries, projects and containers
+- Version and owner tracking
+- Interactive dependency graph
+- Compliance: spot projects that rely on outdated deliverables
 
-### 🔒 Distributed Locking
+### Distributed locks
+- Exclusive locks to prevent concurrent operations
+- Identified owner, automatic expiry
+- Manage and release locks from the UI
 
-- **Exclusive Locks** : Prevent concurrent operations
-- **Lock Ownership** : Track who owns which locks
-- **Automatic Cleanup** : Locks expire automatically
-- **Coordination** : Synchronize deployments and operations
+### API and integrations
+- Native **gRPC** and **REST** through grpc-gateway
+- **Swagger UI** and OpenAPI specification
+- **MCP server** (Model Context Protocol) for AI agents
+- **Prometheus**: built-in metrics endpoint
+- **Homer**: sync links from your dashboard
 
-### 🎨 Modern UI
+## Prerequisites
 
-- **Dashboard** : Overview of recent events and statistics
-- **Timeline** : Chronological event view with filtering
-- **Calendar** : Monthly calendar view of events
-- **Dark Mode** : Beautiful dark theme support
-- **Responsive** : Works on desktop, tablet, and mobile
-- **Real-time** : Auto-refresh and live updates
-
-### 🔌 API & Integration
-
-- **gRPC API** : High-performance native API
-- **REST API** : HTTP/JSON endpoints via grpc-gateway
-- **Swagger UI** : Interactive API documentation
-- **OpenAPI Spec** : Standard API specification
-- **Prometheus** : Built-in metrics endpoint
+- MongoDB 7 (or FerretDB)
+- Docker, or Go 1.26+ and Node.js to run from source
 
 ## Installation
 
-### Via Helm
+<Tabs>
+<TabItem label="Docker">
 
 ```bash
-helm repo add bananaops https://bananaops.github.io/tracker/ 
-helm repo update
-helm install tracker bananaops/tracker --namespace tracker --create-namespace
+# Database
+docker run -d -p 27017:27017 --name tracker-mongo mongo:7
+
+# Application
+docker run -p 8080:8080 -p 8081:8081 -p 8765:8765 bananaops/tracker:latest
 ```
 
-## Démarrage Rapide
+</TabItem>
+<TabItem label="Docker Compose">
 
-<Steps>
+```bash
+git clone https://github.com/BananaOps/tracker.git
+cd tracker
+docker-compose up -d
+```
 
-1. **Ajouter le repository Helm**
-   
-   ```bash
-   helm repo add bananaops https://bananaops.github.io/tracker/ 
-   helm repo update
-   ```
+</TabItem>
+<TabItem label="Helm">
 
-2. **Créer un fichier de configuration**
-   
-   ```yaml
-   # values.yaml
-   replicaCount: 2
-   
-   image:
-     repository: bananaops/tracker
-     tag: "latest"
-   
-   ingress:
-     enabled: true
-     className: nginx
-     hosts:
-       - host: tracker.example.com
-         paths:
-           - path: /
-             pathType: Prefix
-   
-    env:
-      db:
-        host: tracker-mongodb
-        port: 27017
-      jira:
-        # Jira domain for ticket creation (e.g., your-company.atlassian.net or jira.company.com)
-        domain: "jira.company.com"
-        # Optional: Jira project key for quick ticket creation
-        projectKey: ""
-      slack:
-        # Slack workspace name (e.g., your-company)
-        workspace: "your-workspace"
-        # Slack channel Name for deployment events (e.g., tracker-deployments)
-        eventsChannel: ""
-       ```
+The chart repository is published on GitHub Pages. The chart ships MongoDB as a
+dependency (`mongodb.enabled`, on by default).
 
-3. **Installer avec Helm**
-   
-   ```bash
-   helm install tracker bananaops/tracker \
-     --values values.yaml \
-     --namespace tracker \
-     --create-namespace
-   ```
+```bash
+helm repo add bananaops-tracker https://bananaops.github.io/tracker/
+helm repo update bananaops-tracker
 
-4. **Vérifier le déploiement**
-   
-   ```bash
-   kubectl get pods -n tracker
-   kubectl get ingress -n tracker
-   ```
+helm install tracker bananaops-tracker/tracker \
+  --namespace tracker --create-namespace
+```
 
-</Steps>
+</TabItem>
+<TabItem label="Source">
+
+```bash
+git clone https://github.com/BananaOps/tracker.git
+cd tracker
+
+# Backend
+go run main.go serv
+
+# Frontend (in another terminal)
+cd web && npm install && npm run dev
+```
+
+</TabItem>
+</Tabs>
+
+Once running:
+
+| Service | URL |
+| --- | --- |
+| Web UI | `http://localhost:8080` |
+| Swagger UI | `http://localhost:8080/docs` |
+| Prometheus metrics | `http://localhost:8081/metrics` |
+| gRPC | `localhost:8765` |
 
 ## Configuration
 
-### Configuration Helm
+### Environment variables
+
+| Variable | Description | Default |
+| --- | --- | --- |
+| `DB_HOST` | MongoDB host | `127.0.0.1` |
+| `DB_PORT` | MongoDB port | `27017` |
+| `DB_NAME` | Database name | `tracker` |
+| `DB_USERNAME` / `DB_PASSWORD` | MongoDB authentication | — |
+| `HTTP_PORT` | HTTP port (UI + REST) | `8080` |
+| `GRPC_PORT` | gRPC port | `8765` |
+| `LOG_LEVEL` | Log level | `info` |
+| `JIRA_DOMAIN` / `JIRA_PROJECT_KEY` | Jira integration for drift | — |
+| `SLACK_WORKSPACE` / `SLACK_EVENTS_CHANNEL` | Slack integration | — |
+| `HOMER_URL` | Homer dashboard to sync | — |
+
+### Helm values
 
 ```yaml
 # values.yaml
-replicaCount: 2
+mongodb:
+  enabled: true          # set to false to point at an external database
+  auth:
+    enabled: false
 
 image:
   repository: bananaops/tracker
-  tag: "latest"
-  pullPolicy: IfNotPresent
+  tag: ""                # defaults to the chart appVersion
+
+env:
+  db:
+    host: tracker-mongodb
+    port: 27017
+  jira:
+    domain: "jira.company.com"
+    projectKey: ""
+  slack:
+    workspace: "your-workspace"
+    eventsChannel: ""
+  homer:
+    url: ""
 
 service:
   type: ClusterIP
-  port: 80
-
-ingress:
-  enabled: true
-  className: nginx
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-  hosts:
-    - host: tracker.example.com
-      paths:
-        - path: /
-          pathType: Prefix
-  tls:
-    - secretName: tracker-tls
-      hosts:
-        - tracker.example.com
-
-config:
-  environment: production
-  retention:
-    days: 90
-  
-notifications:
-  slack:
-    enabled: true
-    webhook: ${SLACK_WEBHOOK}
-  email:
-    enabled: true
-    smtp:
-      host: smtp.example.com
-      port: 587
-
-persistence:
-  enabled: true
-  storageClass: "standard"
-  size: 10Gi
-
-resources:
-  limits:
-    cpu: 500m
-    memory: 512Mi
-  requests:
-    cpu: 250m
-    memory: 256Mi
+  grpc:
+    port: 8765
 ```
 
-## Utilisation dans Kubernetes
+```bash
+helm install tracker bananaops-tracker/tracker -f values.yaml \
+  --namespace tracker --create-namespace
+```
 
-### Enregistrer un changement via API
+## Usage
+
+### Create a deployment event
 
 ```bash
-# Via kubectl port-forward
-kubectl port-forward -n tracker svc/tracker 8080:80
-
-# Enregistrer un déploiement
-curl -X POST http://localhost:8080/api/v1/track \
+curl -X POST http://localhost:8080/api/v1alpha1/event \
   -H "Content-Type: application/json" \
   -d '{
-    "type": "deployment",
-    "service": "api-backend",
-    "version": "1.2.3",
-    "environment": "production",
-    "author": "john@example.com"
+    "title": "Deploy service-api v2.1.0 to production",
+    "attributes": {
+      "message": "Deployed via GitHub Actions",
+      "type": 1,
+      "priority": 2,
+      "service": "service-api",
+      "status": 3,
+      "environment": 7,
+      "owner": "platform-team"
+    },
+    "links": {
+      "pullRequestLink": "https://github.com/org/repo/pull/123",
+      "ticket": "PROJ-456"
+    }
   }'
 ```
 
-### Intégration CI/CD
+The full list of codes (`type`, `priority`, `status`, `environment`) is described
+in the OpenAPI specification, served at `/docs`.
 
-```yaml
-# .github/workflows/deploy.yml
-- name: Track Deployment
-  run: |
-    kubectl run tracker-client --rm -i --restart=Never \
-      --image=curlimages/curl -- \
-      curl -X POST http://tracker.tracker.svc.cluster.local/api/v1/track \
-      -H "Content-Type: application/json" \
-      -d '{
-        "type": "deployment",
-        "service": "${{ github.repository }}",
-        "version": "${{ github.sha }}",
-        "environment": "production"
-      }'
-```
+## Ecosystem
 
-### 🎯 Cas d'usage
-
-<Card title="Freeze de production" icon="warning">
-  Bloquer les déploiements pendant une période critique (Black Friday, maintenance)
+<Card title="Homer-k8s" icon="setting">
+  Feed Tracker's Links page from your Homer dashboard — see [Homer-k8s](/projects/homer-k8s/)
 </Card>
 
-<Card title="Audit et compliance" icon="approve-check">
-  Tracer qui a déployé quoi et quand
-</Card>
+## Links
 
-<Card title="Coordination d'équipes" icon="star">
-  Éviter les déploiements concurrents via le système de locks
-</Card>
-
-<Card title="Dashboard centralisé" icon="setting">
-  Interface web pour visualiser l'état des déploiements
-</Card>
-
-<Card title="API gRPC/REST" icon="rocket">
-  Intégration dans vos pipelines CI/CD (via l'API REST/gRPC)
-</Card>
-
-<Card title="Détection de déploiements simultanés" icon="warning">
-  Identifier et prévenir les déploiements concurrents sur une même application/environnement pendant des périodes qui se chevauchent
-</Card>
-
-<Card title="Éviter les conflits" icon="error">
-  Empêcher deux équipes de déployer simultanément sur le même environnement
-</Card>
-
-<Card title="Coordination temporelle" icon="approve-check">
-  Visualiser si un déploiement est déjà en cours avant d'en lancer un nouveau
-</Card>
-
-<Card title="Traçabilité des incidents" icon="information">
-  Comprendre si un problème vient de déploiements qui se sont superposés
-</Card>
-
-<Card title="Gestion des rollbacks" icon="rocket">
-  S'assurer qu'un rollback n'interfère pas avec un déploiement en cours
-</Card>
-
-
-### 🔗 Intégrations
-
-<Card title="Intégration Jira" icon="puzzle">
-  Créer automatiquement des tickets Jira pour les déploiements ou incidents
-</Card>
-
-<Card title="Intégration Slack" icon="comment">
-  Notifier une channel Slack des événements de déploiement via [Tracker-Slack](/projects/tracker-slack/)
-</Card>
-
-### 📊 Catalogues et Métadonnées
-
-<Card title="Catalogue d'applications" icon="open-book">
-  Centraliser les informations sur vos applications (repos, équipes, environnements)
-</Card>
-
-<Card title="Vue d'ensemble multi-environnements" icon="seti:config">
-  Visualiser quelles versions sont déployées sur dev/staging/prod
-</Card>
-
-
-## Intégrations Kubernetes
-
-Tracker s'intègre nativement avec :
-- **CI/CD** : GitHub Actions, GitLab CI, Tekton, Jenkins
-- **Monitoring** : Prometheus, Grafana
-- **Communication** : Slack (via [Tracker-Slack](/projects/tracker-slack/))
-
-
-## Liens
-
-- [🚀 Démo en ligne](https://tracker-demo.bananaops.cloud/)
-- [📚 Documentation API](https://tracker-demo.bananaops.cloud/docs)
-- [GitHub Repository](https://github.com/BananaOps/tracker)
+- [GitHub repository](https://github.com/BananaOps/tracker)
+- [Releases](https://github.com/BananaOps/tracker/releases)
+- [Docker image](https://hub.docker.com/r/bananaops/tracker)
+- [Helm repository](https://bananaops.github.io/tracker/)
+- [Installation guide](https://github.com/BananaOps/tracker/blob/main/docs/INSTALLATION.md) · [Configuration](https://github.com/BananaOps/tracker/blob/main/docs/CONFIGURATION.md) · [User guide](https://github.com/BananaOps/tracker/blob/main/docs/USER_GUIDE.md)
 
 ## Support
 
-Besoin d'aide ? 
-- [Issues GitHub](https://github.com/BananaOps/tracker/issues)
+- [GitHub issues](https://github.com/BananaOps/tracker/issues)
 - [Discussions](https://github.com/BananaOps/tracker/discussions)

@@ -4,17 +4,15 @@
  * Fidèle à la maquette Home.dc.html :
  *   logo SVG + wordmark | nav : Tools · Documentation · GitHub ↗
  */
-import LanguageSelect from "@astrojs/starlight/components/LanguageSelect.astro";
 
-const hasSidebar = Astro.locals.starlightRoute.hasSidebar;
-const locale = Astro.currentLocale || "en";
+const docsHref = "/docs/quick-start/";
 ---
 
 <header class="bo-header">
   <div class="bo-header__inner">
 
     <!-- Logo + wordmark -->
-    <a href={`/${locale === "en" ? "" : locale}`} class="bo-header__brand" aria-label="BananaOps — retour à l'accueil">
+    <a href="/" class="bo-header__brand" aria-label="BananaOps — back to home">
       <svg viewBox="0 0 160 160" width="40" height="40" role="img" aria-label="BananaOps logo" aria-hidden="true">
         <rect width="160" height="160" rx="38" fill="#10264A"/>
         <g transform="translate(28,22) scale(1.12)">
@@ -31,19 +29,17 @@ const locale = Astro.currentLocale || "en";
     </a>
 
     <!-- Navigation desktop -->
-    <nav class="bo-header__nav" aria-label="Navigation principale">
-      <a href="#tools" class="bo-header__link">Tools</a>
-      <a href="https://docs.bananaops.tech" class="bo-header__link">Documentation</a>
+    <nav class="bo-header__nav" aria-label="Main navigation">
+      <a href="/#tools" class="bo-header__link">Tools</a>
+      <a href={docsHref} class="bo-header__link">Documentation</a>
       <a href="https://github.com/BananaOps" class="bo-header__link bo-header__link--ext" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
-
-      {!hasSidebar && <LanguageSelect />}
     </nav>
 
     <!-- Hamburger mobile -->
     <button
       type="button"
       class="bo-header__hamburger"
-      aria-label="Ouvrir le menu"
+      aria-label="Open menu"
       aria-expanded="false"
       aria-controls="bo-mobile-menu"
       id="bo-hamburger"
@@ -56,9 +52,9 @@ const locale = Astro.currentLocale || "en";
 
   <!-- Menu mobile (masqué par défaut) -->
   <div class="bo-mobile-menu" id="bo-mobile-menu" aria-hidden="true">
-    <nav aria-label="Navigation mobile">
-      <a href="#tools" class="bo-mobile-menu__link">Tools</a>
-      <a href="https://docs.bananaops.tech" class="bo-mobile-menu__link">Documentation</a>
+    <nav aria-label="Mobile navigation">
+      <a href="/#tools" class="bo-mobile-menu__link">Tools</a>
+      <a href={docsHref} class="bo-mobile-menu__link">Documentation</a>
       <a href="https://github.com/BananaOps" class="bo-mobile-menu__link bo-mobile-menu__link--ext" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
     </nav>
   </div>
