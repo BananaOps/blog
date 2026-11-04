@@ -1,0 +1,101 @@
+---
+/**
+ * DocsProjectGrid — liste des projets dans la documentation.
+ *
+ * Remplace la grille de <Card> Starlight, qui n'accepte que ses propres icônes :
+ * on veut les logos de bananaops-icons.
+ */
+import { projects, logoFor } from '../lib/projects';
+
+---
+
+<ul class="docs-projects not-content">
+  {projects.map((project) => (
+    <li>
+      <a href={`/projects/${project.slug}/`}>
+        <img
+          src={logoFor(project.slug)}
+          alt=""
+          aria-hidden="true"
+          width="36"
+          height="36"
+          loading="lazy"
+          decoding="async"
+        />
+        <span>
+          <strong>{project.name}</strong>
+          <small>{project.tagline}</small>
+        </span>
+      </a>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .docs-projects {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: 12px;
+  }
+
+  .docs-projects li {
+    margin: 0;
+    padding: 0;
+  }
+
+  .docs-projects a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 100%;
+    padding: 14px 16px;
+    border: 1px solid var(--doc-border, rgba(16, 38, 74, 0.1));
+    border-radius: var(--doc-radius, 10px);
+    background: var(--doc-surface, #fff);
+    text-decoration: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .docs-projects a:hover {
+    /* Le jaune en accent, jamais sous du texte. */
+    border-color: var(--doc-banana, #ffc83d);
+    box-shadow: 0 1px 3px rgba(16, 38, 74, 0.08);
+  }
+
+  .docs-projects img {
+    width: 36px;
+    height: 36px;
+    flex: none;
+    border-radius: 10px;
+    display: block;
+  }
+
+  .docs-projects span {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .docs-projects strong {
+    font-family: var(--doc-font-display, inherit);
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--doc-text, #10264a);
+  }
+
+  .docs-projects small {
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--doc-text-muted, #2e5288);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .docs-projects a {
+      transition: none;
+    }
+  }
+</style>

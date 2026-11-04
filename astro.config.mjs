@@ -19,7 +19,7 @@ export const locales = locals
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://banananops.tech',
+  site: 'https://bananaops.tech',
   image: {
     service: { entrypoint: "astro/assets/services/noop" },
   },
@@ -29,17 +29,22 @@ export default defineConfig({
       logo: {
         light: logo,
         dark: logo_darkmode,
-        alt: "DocKit Logo",
+        alt: "BananaOps",
       },
       // @ts-ignore
       social: social.main || [],
       locales,
       sidebar: sidebar.main || [],
-      customCss: ["./src/styles/global.css"],
+      customCss: ["./src/styles/global.css", "./src/styles/docs.css"],
+      // Recherche désactivée : pas d'index Pagefind ni d'UI de recherche.
+      pagefind: false,
+      // 404 page declared in src/pages/404.astro.
+      disable404Route: true,
       components: {
         Head: "./src/components/override-components/Head.astro",
         Header: "./src/components/override-components/Header.astro",
         Hero: "./src/components/override-components/Hero.astro",
+        PageTitle: "./src/components/override-components/PageTitle.astro",
         PageFrame: "./src/components/override-components/PageFrame.astro",
         PageSidebar: "./src/components/override-components/PageSidebar.astro",
         TwoColumnContent: "./src/components/override-components/TwoColumnContent.astro",

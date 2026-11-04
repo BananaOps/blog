@@ -1,0 +1,135 @@
+---
+/**
+ * ToolCard — carte d'outil BananaOps
+ * Fidèle à la maquette Home.dc.html (ToolCard component)
+ *
+ * Props :
+ *   toolName  — identifiant slug (ex: "tracker")
+ *   icon      — chemin de l'icône (défaut : /icons/<toolName>.svg)
+ *   desc      — description courte
+ *   stack     — technologies (ex: "Go · MongoDB")
+ *   version   — version courante (ex: "v0.9.3")
+ *   license   — licence (ex: "MIT")
+ *   status    — "stable" | "beta" | "WIP"
+ *   docsHref  — lien documentation
+ *   repoHref  — lien dépôt GitHub
+ */
+
+interface Props {
+  toolName: string;
+  icon?: string;
+  desc: string;
+  stack: string;
+  version?: string;
+  license?: string;
+  status?: "stable" | "beta" | "WIP";
+  docsHref: string;
+  repoHref: string;
+}
+
+const {
+  toolName,
+  icon,
+  desc,
+  stack,
+  version,
+  license = "MIT",
+  status = "stable",
+  docsHref,
+  repoHref,
+} = Astro.props;
+
+const iconSrc = icon ?? `/icons/${toolName}.svg`;
+
+const statusClass =
+  status === "stable"
+    ? "tool-card__tag--status-stable"
+    : status === "beta"
+    ? "tool-card__tag--status-beta"
+    : "tool-card__tag--status-wip";
+
+const statusLabel =
+  status === "stable" ? "stable" : status === "beta" ? "beta" : "WIP";
+---
+
+<article class="tool-card">
+  <!-- En-tête : icône + nom + status -->
+  <div class="tool-card__header">
+    <img
+      class="tool-card__icon"
+      src={iconSrc}
+      alt=""
+      aria-hidden="true"
+      width="44"
+      height="44"
+      loading="lazy"
+      decoding="async"
+    />
+    <span class="tool-card__name">{toolName}</span>
+    <span class={`tool-card__tag ${statusClass}`}>{statusLabel}</span>
+  </div>
+
+  <!-- Description -->
+  <p class="tool-card__desc">{desc}</p>
+
+  <!-- Métadonnées : stack · version · licence -->
+  <div class="tool-card__meta">
+    <span class="tool-card__tag">{stack}</span>
+    {version && <span class="tool-card__tag">{version}</span>}
+    <span class="tool-card__tag">{license}</span>
+  </div>
+
+  <!-- Liens -->
+  <div class="tool-card__links">
+    <a href={docsHref} class="tool-card__link">
+      Documentation →
+    </a>
+    <a
+      href={repoHref}
+      class="tool-card__link tool-card__link--repo"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      GitHub ↗
+    </a>
+  </div>
+</article>
+
+<style>
+  /* Les styles principaux sont dans global.css (.tool-card etc.)
+     On garde ici uniquement les styles propres au composant. */
+
+  .tool-card__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .tool-card__icon {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border-radius: 11px;
+    display: block;
+    box-shadow: 0 2px 8px rgba(16, 38, 74, 0.18);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  /* Le nom pousse le badge de statut à droite */
+  .tool-card__name {
+    margin-right: auto;
+  }
+
+  :global(.tool-card:hover) .tool-card__icon {
+    transform: translateY(-1px) scale(1.04);
+    box-shadow: 0 6px 16px rgba(16, 38, 74, 0.24);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tool-card__icon,
+    :global(.tool-card:hover) .tool-card__icon {
+      transition: none;
+      transform: none;
+    }
+  }
+</style>

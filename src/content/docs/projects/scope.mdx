@@ -1,0 +1,196 @@
+---
+title: Scope
+description: Sync your Helm charts to private OCI registries
+---
+
+import { Card, Tabs, TabItem, Steps } from '@astrojs/starlight/components';
+
+**Scope** — *Sync Chart On Private rEgistry* — is an open source CLI that syncs your
+Helm charts to OCI-compatible registries such as Nexus, ECR, Docker Hub or Scaleway
+Registry. The sources to mirror are described in a single YAML file.
+
+
+| | |
+| --- | --- |
+| **Role** | CLI that syncs Helm charts to private OCI registries |
+| **Stack** | Go · OCI · Helm |
+| **License** | Apache-2.0 |
+| **Image** | `bananaops/scope` |
+| **Helm chart** | — (command-line tool) |
+| **Repository** | [BananaOps/scope](https://github.com/BananaOps/scope) · [releases](https://github.com/BananaOps/scope/releases) |
+
+## Features
+
+- **Automatic sync**: mirror your Helm charts to your private registries
+- **Multiple registries**: ECR, Nexus, Docker Hub, Scaleway Registry and other OCI registries
+- **Version control**: pick exactly which versions to sync
+- **Authentication**: username / password, or password read from stdin
+- **CI integration**: designed to run in a scheduled job
+- **Detailed logs**: follow and troubleshoot every sync
+
+## Prerequisites
+
+- An OCI-compatible registry
+- A repository created on the registry, in the form `{{ registry }}/{{ namespace }}`
+  (e.g. `rg.fr-par.scw.cloud/helm-mirrors`)
+
+## Installation
+
+### Binary
+
+Download the latest version from the
+[GitHub releases](https://github.com/BananaOps/scope/releases).
+
+### Docker
+
+```bash
+docker run bananaops/scope scope -h
+```
+
+### From source
+
+```bash
+go build -ldflags "-s -w" -o bin/scope
+```
+
+## Quick start
+
+<Steps>
+
+1. **Describe the charts to sync**
+
+   ```yaml
+   # scope_config.yml
+   apache.github.io/superset:
+     charts:
+       superset:
+       - 0.1.0
+       - 0.1.1
+   prometheus-community.github.io/helm-charts:
+     charts:
+       prometheus:
+       - ~11.1.0
+       prometheus-node-exporter:
+       - 2.0.0
+       - 2.0.1
+   ```
+
+2. **Run the sync**
+
+   ```bash
+   scope -s scope_config.yml -r 000000000000.dkr.ecr.eu-west-3.amazonaws.com
+   ```
+
+3. **Check the result**
+
+   The charts show up in the destination registry namespace.
+
+</Steps>
+
+## CLI options
+
+```bash
+> scope -h
+Sync Chart On Private Registry
+
+Usage:
+  scope [flags]
+
+Flags:
+      --append-source              append repository to chart name
+      --ca-file string             verify certificates of HTTPS-enabled servers using this CA bundle
+      --cert-file string           identify HTTPS client using this SSL certificate file
+  -h, --help                       help for scope
+      --insecure-skip-tls-verify   skip tls certificate checks
+      --key-file string            identify HTTPS client using this SSL key file
+  -n, --namespace string           namespace destination chart registry
+  -p, --password string            chart destination repository password
+      --password-stdin             read password or identity token from stdin
+  -r, --registry string            destination chart registry
+  -s, --source-file string         path to source file
+  -t, --type string                type for registry (nexus or oci) (default "oci")
+  -u, --user string                chart destination repository user
+```
+
+## Tested registries
+
+| Registry           | Tested | Scope version |
+| ------------------ | ------ | ------------- |
+| AWS ECR            | ✅     | v0.0          |
+| Nexus              | ✅     | v0.2          |
+| Docker Hub         | ✅     | v0.4          |
+| Scaleway Registry  | ✅     | v0.4          |
+
+## CI integration
+
+### GitLab CI
+
+```yaml
+sync-charts:
+  tags:
+    - docker
+  image: bananaops/scope
+  stage: sync
+  script: scope -s ./scope_config.yml -t nexus -u $REGISTRY_USER -p $REGISTRY_USER_TOKEN -r https://docker.nexus-bananaops.com
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: manual
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: always
+```
+
+## Keeping it up to date with Renovate
+
+Renovate can keep the configuration file up to date:
+
+```json
+"packageRules": [
+  {
+    "customType": "regex",
+    "fileMatch": ["scope_config.yml$"],
+    "matchStrings": [
+      "(?<registryUrl>.*):\\s+charts:\\s+((?<depName>.*):\\s+-\\s(?<currentValue>[\\w+\\.]*))"
+    ],
+    "datasourceTemplate": "helm"
+  }
+]
+```
+
+In this example, the registry URL must include the protocol:
+
+```yaml
+https://stakater.github.io/stakater-charts:
+  charts:
+    reloader:
+    - 1.0.67
+```
+
+:::note
+Known limitation with Renovate in this example: multiple versions of the same chart
+are not handled.
+:::
+
+## Use cases
+
+<Card title="Air-gapped environments" icon="rocket">
+  Sync your charts to isolated environments
+</Card>
+
+<Card title="Multi-cloud" icon="setting">
+  Distribute your charts across several cloud providers
+</Card>
+
+<Card title="Backup" icon="warning">
+  Back up your critical charts
+</Card>
+
+## Links
+
+- [GitHub repository](https://github.com/BananaOps/scope)
+- [Releases](https://github.com/BananaOps/scope/releases)
+- [Docker image](https://hub.docker.com/r/bananaops/scope)
+
+## Support
+
+- [GitHub issues](https://github.com/BananaOps/scope/issues)
+- [Discussions](https://github.com/BananaOps/scope/discussions)

@@ -1,5 +1,6 @@
 @layer base, starlight, theme, components, utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 @import "@astrojs/starlight-tailwind";
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities);
@@ -7,262 +8,455 @@
 @plugin "../tailwind-plugin/tw-theme";
 @plugin "../tailwind-plugin/tw-bs-grid";
 
+/* ─── BananaOps Design Tokens ─────────────────────────────────────────────── */
 :root {
-  /* BananaOps Dark Mode Palette */
-  --banana-black-matte: #0C0C0C;
-  --banana-onyx-soft: #151515;
-  --banana-ivory-white: #F2F2F2;
-  --banana-warm-gray: #B8B8B8;
-  --banana-golden: #D8B634;
-  --banana-blue-mist: #5FA3F4;
-  --banana-soft-vanta: #0E0E0E;
-  --banana-glow: #F0C540;
+  /* Palette maquette */
+  --cream:    #EDE6D8;
+  --midnight: #10264A;
+  --banana:   #FFC83D;
+  --cloud:    #5C6B85;
+  --banana-shadow: #E5A521;
 
-  --sl-color-accent-low: color-mix(in srgb, var(--banana-golden), #000 70%);
-  --sl-color-accent: var(--banana-golden);
-  --sl-color-accent-high: var(--banana-glow);
+  /* Starlight overrides — fond crème, texte midnight */
+  --sl-color-bg:          var(--cream);
+  --sl-color-bg-nav:      var(--cream);
+  --sl-color-bg-sidebar:  #E6DFD0;
 
-  --sl-color-white: var(--banana-ivory-white);
-  --sl-color-gray-1: #1A1A1A;
-  --sl-color-gray-2: var(--banana-onyx-soft);
-  --sl-color-gray-3: #2A2A2A;
-  --sl-color-gray-4: #404040;
-  --sl-color-gray-5: #606060;
-  --sl-color-gray-6: var(--banana-warm-gray);
+  --sl-color-white:       var(--midnight);
+  --sl-color-black:       var(--cream);
 
-  --sl-color-black: var(--banana-black-matte);
-  --sl-color-bg: var(--banana-black-matte);
-  --sl-color-bg-nav: var(--banana-onyx-soft);
-  --sl-color-bg-sidebar: var(--banana-onyx-soft);
-  
-  --sl-sidebar-width: 320px;
-  --sl-color-hairline: color-mix(
-    in srgb,
-    var(--banana-warm-gray) 15%,
-    transparent
-  );
-  --sl-color-hairline-light: var(--banana-soft-vanta);
-  
-  /* Text colors */
-  --sl-color-text: var(--banana-ivory-white);
-  --sl-color-text-accent: var(--banana-golden);
+  --sl-color-gray-1:      #F5F0E8;
+  --sl-color-gray-2:      #EDE6D8;
+  --sl-color-gray-3:      #D8D0C0;
+  --sl-color-gray-4:      #B8B0A0;
+  --sl-color-gray-5:      #8A8070;
+  --sl-color-gray-6:      var(--cloud);
+
+  --sl-color-accent-low:  color-mix(in srgb, var(--banana) 20%, var(--cream));
+  --sl-color-accent:      var(--banana);
+  --sl-color-accent-high: var(--banana-shadow);
+
+  --sl-color-text:        var(--midnight);
+  --sl-color-text-accent: var(--banana);
+
+  --sl-color-hairline:       rgba(16, 38, 74, 0.12);
+  --sl-color-hairline-light: rgba(16, 38, 74, 0.06);
+
+  /* Typography */
+  --font-display: "Sora", "Inter", system-ui, sans-serif;
+  --font-body:    "Inter", system-ui, sans-serif;
+  --tracking-display: -0.02em;
+
+  --sl-sidebar-width: 300px;
+  --sl-nav-height: 72px;
 }
 
-/* Light mode colors. */
-:root[data-theme="light"] {
-  /* BananaOps Light Mode Palette */
-  --banana-yellow: #F7D438;
-  --banana-deep: #E5B82E;
-  --banana-dark-tech: #0E0E0E;
-  --banana-soft-brown: #7A4E12;
-  --banana-tech-gray: #EDEDED;
-  --banana-electric-blue: #3A82F7;
-
-  --sl-color-accent-low: color-mix(in srgb, var(--banana-yellow), #fff 50%);
-  --sl-color-accent: var(--banana-yellow);
-  --sl-color-accent-high: var(--banana-deep);
-
-  --sl-color-white: var(--banana-dark-tech);
-  --sl-color-gray-1: #FAFAFA;
-  --sl-color-gray-2: #F5F5F5;
-  --sl-color-gray-3: var(--banana-tech-gray);
-  --sl-color-gray-4: #C0C0C0;
-  --sl-color-gray-5: #808080;
-  --sl-color-gray-6: #404040;
-  --sl-color-gray-7: #FFFFFF;
-
-  --sl-color-black: var(--banana-dark-tech);
-  --sl-color-bg: #FFFFFF;
-  --sl-color-bg-nav: var(--banana-tech-gray);
-  --sl-color-bg-sidebar: #F9F9F9;
-  --sl-color-text: var(--banana-dark-tech);
-  --sl-color-text-accent: var(--banana-yellow);
-  
-  --sl-color-hairline: color-mix(
-    in srgb,
-    var(--banana-dark-tech) 15%,
-    transparent
-  );
+/* Pas de dark mode — site toujours en mode crème */
+:root[data-theme="dark"] {
+  --sl-color-bg:          var(--cream);
+  --sl-color-bg-nav:      var(--cream);
+  --sl-color-bg-sidebar:  #E6DFD0;
+  --sl-color-white:       var(--midnight);
+  --sl-color-black:       var(--cream);
+  --sl-color-gray-1:      #F5F0E8;
+  --sl-color-gray-2:      #EDE6D8;
+  --sl-color-gray-3:      #D8D0C0;
+  --sl-color-gray-4:      #B8B0A0;
+  --sl-color-gray-5:      #8A8070;
+  --sl-color-gray-6:      var(--cloud);
+  --sl-color-text:        var(--midnight);
+  --sl-color-text-accent: var(--banana);
+  --sl-color-hairline:    rgba(16, 38, 74, 0.12);
 }
 
-@theme {
-  --color-primary-gradient: linear-gradient(
-    35.65deg,
-    var(--banana-soft-vanta) -10.94%,
-    var(--banana-golden) 61.04%,
-    var(--banana-glow) 133.01%
-  );
+/* ─── Base ─────────────────────────────────────────────────────────────────── */
+body {
+  background: var(--cream) !important;
+  color: var(--midnight);
+  font-family: var(--font-body);
 }
 
-/* Language selector styles */
-starlight-lang-select {
-  display: inline-flex !important;
-  align-items: center !important;
+/* ─── Navbar ────────────────────────────────────────────────────────────────── */
+/* Le sélecteur d'élément `header` touchait aussi notre <header class="bo-header">
+   imbriqué dans celui de Starlight : les deux traçaient un trait, d'où une barre
+   qui semblait doublée. Le trait appartient désormais au seul .bo-header (voir
+   override-components/Header.astro), qui est l'élément sticky donc le bon
+   porteur de la séparation. */
+.header,
+header,
+.sl-flex.header {
+  background: var(--cream) !important;
+  border-bottom: none !important;
 }
 
+.bo-header {
+  border-bottom: 1px solid rgba(16, 38, 74, 0.10) !important;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 96px;
+  height: var(--sl-nav-height);
+  background: transparent;
+}
+
+.site-title,
+.site-title a,
+.site-title span {
+  font-family: var(--font-display) !important;
+  text-decoration: none;
+}
+
+/* Nav links */
+.nav-link {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--midnight) !important;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-link:hover {
+  color: #2E5288 !important;
+}
+.nav-link.active {
+  color: var(--midnight) !important;
+  font-weight: 600;
+}
+
+/* External link (GitHub) */
+.nav-item:last-child .nav-link {
+  color: var(--cloud) !important;
+}
+.nav-item:last-child .nav-link:hover {
+  color: var(--midnight) !important;
+}
+
+/* ─── Sidebar ───────────────────────────────────────────────────────────────── */
+.sidebar-content a,
+.sidebar-content a span {
+  color: var(--midnight) !important;
+  transition: color 0.2s;
+}
+.sidebar-content a:hover,
+.sidebar-content a[aria-current="page"] {
+  color: var(--cloud) !important;
+}
+
+/* ─── Boutons ───────────────────────────────────────────────────────────────── */
+.btn-primary,
+a.btn-primary {
+  background: var(--banana);
+  color: var(--midnight);
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 14px 24px;
+  font-size: 16px;
+  box-shadow: 0 3px 0 var(--banana-shadow);
+  text-decoration: none;
+  transition: background 0.2s, box-shadow 0.2s;
+  display: inline-block;
+}
+.btn-primary:hover {
+  background: var(--banana-shadow);
+  box-shadow: 0 3px 0 var(--midnight);
+  color: var(--midnight);
+}
+
+.btn-outline,
+a.btn-outline {
+  color: var(--midnight);
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 14px 22px;
+  font-size: 16px;
+  border: 1.5px solid rgba(16, 38, 74, 0.25);
+  text-decoration: none;
+  transition: border-color 0.2s;
+  display: inline-block;
+}
+.btn-outline:hover {
+  border-color: var(--midnight);
+  color: var(--midnight);
+}
+
+/* ─── Hero ──────────────────────────────────────────────────────────────────── */
+.hero {
+  padding: 88px 96px 76px !important;
+  background: var(--cream) !important;
+}
+
+.hero h1 {
+  font-family: var(--font-display) !important;
+  font-weight: 700 !important;
+  font-size: 64px !important;
+  line-height: 1.05 !important;
+  letter-spacing: var(--tracking-display) !important;
+  color: var(--midnight) !important;
+  max-width: 16ch;
+  text-wrap: balance;
+  margin-bottom: 0;
+}
+
+/* ─── Tools section ─────────────────────────────────────────────────────────── */
+.tools-section {
+  padding: 8px 96px 88px;
+}
+
+.tools-section h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 30px;
+  letter-spacing: var(--tracking-display);
+  color: var(--midnight);
+  margin: 0;
+}
+
+/* ─── Tool Card ─────────────────────────────────────────────────────────────── */
+.tool-card {
+  background: #fff;
+  border: 1px solid rgba(16, 38, 74, 0.10);
+  border-radius: 14px;
+  padding: 28px 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+  min-height: 240px;
+}
+.tool-card:hover {
+  box-shadow: 0 6px 24px rgba(16, 38, 74, 0.10);
+  border-color: rgba(16, 38, 74, 0.20);
+  transform: translateY(-2px);
+}
+
+.tool-card__name {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--midnight);
+  letter-spacing: -0.01em;
+}
+
+.tool-card__desc {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--cloud);
+  flex-grow: 1;
+  margin: 0;
+}
+
+.tool-card__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.tool-card__tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-weight: 500;
+  border: 1px solid rgba(16, 38, 74, 0.14);
+  color: var(--cloud);
+  background: transparent;
+}
+
+.tool-card__tag--status-stable {
+  background: color-mix(in srgb, #22c55e 10%, transparent);
+  color: #15803d;
+  border-color: color-mix(in srgb, #22c55e 25%, transparent);
+}
+.tool-card__tag--status-beta {
+  background: color-mix(in srgb, var(--banana) 15%, transparent);
+  color: #92600a;
+  border-color: color-mix(in srgb, var(--banana) 30%, transparent);
+}
+.tool-card__tag--status-wip {
+  background: color-mix(in srgb, #8b5cf6 10%, transparent);
+  color: #5b21b6;
+  border-color: color-mix(in srgb, #8b5cf6 25%, transparent);
+}
+
+.tool-card__links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(16, 38, 74, 0.08);
+}
+
+.tool-card__link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--midnight);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.tool-card__link:hover {
+  color: var(--cloud);
+}
+.tool-card__link--repo {
+  color: var(--cloud);
+  font-weight: 500;
+}
+.tool-card__link--repo:hover {
+  color: var(--midnight);
+}
+
+/* ─── "Who we are" section ──────────────────────────────────────────────────── */
+.who-section {
+  background: var(--midnight);
+  padding: 72px 96px;
+}
+.who-section h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1.15;
+  letter-spacing: var(--tracking-display);
+  color: var(--cream);
+  margin: 0;
+}
+.who-section p {
+  font-size: 19px;
+  line-height: 1.65;
+  color: var(--cream);
+  max-width: 62ch;
+  text-wrap: pretty;
+  margin: 0;
+}
+.who-section a {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--banana) !important;
+  text-decoration: none;
+  border-bottom: 1.5px solid rgba(255, 200, 61, 0.4);
+  padding-bottom: 2px;
+  align-self: flex-start;
+  transition: border-color 0.2s;
+}
+.who-section a:hover {
+  border-bottom-color: var(--banana);
+}
+
+/* ─── Footer ────────────────────────────────────────────────────────────────── */
+footer.bo-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32px 96px 36px;
+  border-top: 1px solid rgba(16, 38, 74, 0.12);
+  background: var(--cream);
+}
+footer.bo-footer span {
+  font-size: 14px;
+  color: var(--cloud);
+}
+footer.bo-footer nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+footer.bo-footer nav a {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--midnight) !important;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+footer.bo-footer nav a:hover {
+  color: #2E5288 !important;
+}
+
+/* ─── Doc pages (sidebar layout) ───────────────────────────────────────────── */
+:global([data-has-sidebar]) body {
+  background: var(--cream) !important;
+}
+
+/* ─── Theme switch — on force le mode clair uniquement ──────────────────────── */
+starlight-theme-select {
+  display: none !important;
+}
+
+/* ─── Language selector ─────────────────────────────────────────────────────── */
 starlight-lang-select > button {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 0.5rem !important;
-  color: color-mix(in srgb, var(--banana-dark-tech) 90%, transparent) !important;
+  color: var(--cloud) !important;
   background: transparent !important;
   border: none !important;
   cursor: pointer !important;
-  padding: 0.5rem !important;
-  transition: color 0.2s ease !important;
+  transition: color 0.2s !important;
 }
-
 starlight-lang-select > button:hover {
-  color: var(--banana-deep) !important;
+  color: var(--midnight) !important;
 }
 
-:root[data-theme="dark"] starlight-lang-select > button {
-  color: color-mix(in srgb, var(--sl-color-white) 90%, transparent) !important;
-}
-
-:root[data-theme="dark"] starlight-lang-select > button:hover {
-  color: var(--banana-golden) !important;
-}
-
-starlight-lang-select > button svg,
-starlight-lang-select > button span {
-  color: inherit !important;
-  opacity: 1 !important;
-}
-
-starlight-lang-select > button * {
-  color: inherit !important;
-}
-
-/* Search bar styles */
-.search-bar button,
-.search-bar button span,
-.search-bar button kbd,
-site-search button,
-site-search button span,
-site-search button kbd {
-  color: color-mix(in srgb, var(--banana-dark-tech) 90%, transparent) !important;
-  transition: color 0.2s ease;
-}
-
-.search-bar button:hover,
-.search-bar button:hover span,
-.search-bar button:hover kbd,
-site-search button:hover,
-site-search button:hover span,
-site-search button:hover kbd {
-  color: var(--banana-deep) !important;
-}
-
-:root[data-theme="dark"] .search-bar button,
-:root[data-theme="dark"] .search-bar button span,
-:root[data-theme="dark"] .search-bar button kbd,
-:root[data-theme="dark"] site-search button,
-:root[data-theme="dark"] site-search button span,
-:root[data-theme="dark"] site-search button kbd {
-  color: color-mix(in srgb, var(--sl-color-white) 90%, transparent) !important;
-}
-
-:root[data-theme="dark"] .search-bar button:hover,
-:root[data-theme="dark"] .search-bar button:hover span,
-:root[data-theme="dark"] .search-bar button:hover kbd,
-:root[data-theme="dark"] site-search button:hover,
-:root[data-theme="dark"] site-search button:hover span,
-:root[data-theme="dark"] site-search button:hover kbd {
-  color: var(--banana-golden) !important;
-}
-
-/* Sidebar links styles */
-.sidebar-content a,
-.sidebar-content a span {
-  color: color-mix(in srgb, var(--sl-color-white) 90%, transparent) !important;
-  transition: color 0.2s ease;
-}
-
-.sidebar-content a:hover,
-.sidebar-content a:hover span,
-.sidebar-content a[aria-current="page"],
-.sidebar-content a[aria-current="page"] span {
-  color: var(--banana-golden) !important;
-}
-
-:root[data-theme="light"] .sidebar-content a,
-:root[data-theme="light"] .sidebar-content a span {
-  color: color-mix(in srgb, var(--banana-dark-tech) 90%, transparent) !important;
-}
-
-:root[data-theme="light"] .sidebar-content a:hover,
-:root[data-theme="light"] .sidebar-content a:hover span,
-:root[data-theme="light"] .sidebar-content a[aria-current="page"],
-:root[data-theme="light"] .sidebar-content a[aria-current="page"] span {
-  color: var(--banana-deep) !important;
-}
-
-/* Table of contents "On this page" styles */
+/* ─── TOC / Right sidebar ───────────────────────────────────────────────────── */
 .right-sidebar a,
-.right-sidebar a span,
-starlight-toc a,
-starlight-toc a span {
-  color: color-mix(in srgb, var(--sl-color-white) 90%, transparent) !important;
-  transition: color 0.2s ease;
+starlight-toc a {
+  color: var(--cloud) !important;
+  transition: color 0.2s;
 }
-
 .right-sidebar a:hover,
-.right-sidebar a:hover span,
 .right-sidebar a[aria-current="true"],
-.right-sidebar a[aria-current="true"] span,
 starlight-toc a:hover,
-starlight-toc a:hover span,
-starlight-toc a[aria-current="true"],
-starlight-toc a[aria-current="true"] span {
-  color: var(--banana-golden) !important;
+starlight-toc a[aria-current="true"] {
+  color: var(--midnight) !important;
 }
 
-:root[data-theme="light"] .right-sidebar a,
-:root[data-theme="light"] .right-sidebar a span,
-:root[data-theme="light"] starlight-toc a,
-:root[data-theme="light"] starlight-toc a span {
-  color: color-mix(in srgb, var(--banana-dark-tech) 90%, transparent) !important;
+/* ─── Responsive ────────────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .navbar {
+    padding: 0 40px;
+  }
+  .hero {
+    padding: 60px 40px 48px !important;
+  }
+  .tools-section {
+    padding: 8px 40px 64px;
+  }
+  .who-section {
+    padding: 48px 40px;
+  }
+  footer.bo-footer {
+    padding: 28px 40px;
+  }
 }
 
-:root[data-theme="light"] .right-sidebar a:hover,
-:root[data-theme="light"] .right-sidebar a:hover span,
-:root[data-theme="light"] .right-sidebar a[aria-current="true"],
-:root[data-theme="light"] .right-sidebar a[aria-current="true"] span,
-:root[data-theme="light"] starlight-toc a:hover,
-:root[data-theme="light"] starlight-toc a:hover span,
-:root[data-theme="light"] starlight-toc a[aria-current="true"],
-:root[data-theme="light"] starlight-toc a[aria-current="true"] span {
-  color: var(--banana-deep) !important;
-}
-
-/* Language selector in header */
-.site-title + * starlight-lang-select > button,
-header starlight-lang-select > button,
-.header starlight-lang-select > button {
-  color: color-mix(in srgb, var(--sl-color-white) 90%, transparent) !important;
-}
-
-.site-title + * starlight-lang-select > button:hover,
-header starlight-lang-select > button:hover,
-.header starlight-lang-select > button:hover {
-  color: var(--banana-golden) !important;
-}
-
-:root[data-theme="light"] .site-title + * starlight-lang-select > button,
-:root[data-theme="light"] header starlight-lang-select > button,
-:root[data-theme="light"] .header starlight-lang-select > button {
-  color: color-mix(in srgb, var(--banana-dark-tech) 90%, transparent) !important;
-}
-
-:root[data-theme="light"] .site-title + * starlight-lang-select > button:hover,
-:root[data-theme="light"] header starlight-lang-select > button:hover,
-:root[data-theme="light"] .header starlight-lang-select > button:hover {
-  color: var(--banana-deep) !important;
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 20px;
+  }
+  .hero {
+    padding: 32px 20px 28px !important;
+  }
+  .hero h1 {
+    font-size: 36px !important;
+    line-height: 1.08 !important;
+  }
+  .tools-section {
+    padding: 8px 20px 40px;
+  }
+  .who-section {
+    padding: 36px 20px;
+  }
+  footer.bo-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 24px 20px 28px;
+  }
+  footer.bo-footer nav {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
 }
 
 @import "./base.css";
 @import "./navigation.css";
 @import "./components.css";
 @import "./button.css";
-

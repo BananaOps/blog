@@ -1,68 +1,66 @@
 ---
-title: Guide de Contribution
-description: Comment contribuer aux projets BananaOps
+title: Contribution Guide
+description: How to contribute to BananaOps projects
 ---
 
 import { Card, Steps } from '@astrojs/starlight/components';
 
-# Guide de Contribution 🤝
+Thanks for your interest in contributing to BananaOps! Every contribution is welcome.
 
-Merci de votre intérêt pour contribuer à BananaOps ! Nous accueillons toutes les contributions.
+## How to contribute
 
-## Comment Contribuer
-
-### Signaler un Bug 🐛
+### Report a bug
 
 <Steps>
 
-1. **Vérifier** que le bug n'existe pas déjà dans les [Issues](https://github.com/bananaops)
+1. **Check** that the bug is not already reported in the [issues](https://github.com/bananaops)
 
-2. **Créer une issue** avec :
-   - Titre clair et descriptif
-   - Étapes pour reproduire
-   - Comportement attendu vs actuel
-   - Captures d'écran si pertinent
-   - Environnement (OS, version Node.js, etc.)
+2. **Open an issue** with:
+   - A clear, descriptive title
+   - Steps to reproduce
+   - Expected vs actual behaviour
+   - Screenshots if relevant
+   - Environment (OS, Node.js version, etc.)
 
-3. **Attendre** les retours de la communauté
+3. **Wait** for feedback from the community
 
 </Steps>
 
-### Proposer une Fonctionnalité 💡
+### Suggest a feature
 
-1. Ouvrez une **Discussion** sur GitHub
-2. Expliquez le problème que vous voulez résoudre
-3. Proposez une solution
-4. Discutez avec la communauté
+1. Open a **Discussion** on GitHub
+2. Explain the problem you want to solve
+3. Propose a solution
+4. Discuss it with the community
 
-### Soumettre une Pull Request 🚀
+### Submit a pull request
 
 <Steps>
 
-1. **Fork** le repository
+1. **Fork** the repository
 
-2. **Clone** votre fork
+2. **Clone** your fork
    ```bash
-   git clone https://github.com/VOTRE-USERNAME/projet.git
-   cd projet
+   git clone https://github.com/YOUR-USERNAME/project.git
+   cd project
    ```
 
-3. **Créez une branche**
+3. **Create a branch**
    ```bash
-   git checkout -b feature/ma-fonctionnalite
+   git checkout -b feature/my-feature
    ```
 
-4. **Installez les dépendances**
+4. **Install dependencies**
    ```bash
    task install
    ```
 
-5. **Faites vos modifications**
-   - Suivez les conventions de code
-   - Ajoutez des tests si nécessaire
-   - Mettez à jour la documentation
+5. **Make your changes**
+   - Follow the code conventions
+   - Add tests where needed
+   - Update the documentation
 
-6. **Testez**
+6. **Test**
    ```bash
    task test
    ```
@@ -70,86 +68,85 @@ Merci de votre intérêt pour contribuer à BananaOps ! Nous accueillons toutes 
 7. **Commit**
    ```bash
    git add .
-   git commit -m "feat: ajout de ma fonctionnalité"
+   git commit -m "feat: add my feature"
    ```
 
 8. **Push**
    ```bash
-   git push origin feature/ma-fonctionnalite
+   git push origin feature/my-feature
    ```
 
-9. **Ouvrez une Pull Request** sur GitHub
+9. **Open a pull request** on GitHub
 
 </Steps>
 
-## Standards de Code
+## Code standards
 
-### Messages de Commit
+### Commit messages
 
-Nous utilisons [Conventional Commits](https://www.conventionalcommits.org/) :
+We use [Conventional Commits](https://www.conventionalcommits.org/):
 
 ```bash
-feat: ajout d'une nouvelle fonctionnalité
-fix: correction d'un bug
-docs: mise à jour de la documentation
-style: formatage du code
-refactor: refactoring sans changement de fonctionnalité
-test: ajout ou modification de tests
-chore: tâches de maintenance
+feat: add a new feature
+fix: fix a bug
+docs: update the documentation
+style: code formatting
+refactor: refactoring with no behaviour change
+test: add or update tests
+chore: maintenance tasks
 ```
 
-Exemples :
+Examples:
 ```bash
-feat(tracker): ajout du support PostgreSQL
-fix(slack): correction du formatage des messages
-docs(readme): mise à jour des instructions d'installation
+feat(tracker): add PostgreSQL support
+fix(cloudoff): handle missing time zone in uptime tag
+docs(readme): update installation instructions
 ```
 
-## Bonnes Pratiques
+## Good practices
 
-<Card title="✅ À Faire" icon="approve-check">
-  - Écrire des tests
-  - Documenter votre code
-  - Suivre les conventions
-  - Être respectueux
-  - Demander de l'aide si besoin
+<Card title="Do" icon="approve-check">
+  - Write tests
+  - Document your code
+  - Follow the conventions
+  - Be respectful
+  - Ask for help when you need it
 </Card>
 
-<Card title="❌ À Éviter" icon="error">
-  - Commits trop gros
-  - Code non testé
-  - Breaking changes sans discussion
-  - Code non documenté
+<Card title="Avoid" icon="error">
+  - Oversized commits
+  - Untested code
+  - Breaking changes without discussion
+  - Undocumented code
 </Card>
 
-## Communauté
+## Community
 
-### Code de Conduite
+### Code of conduct
 
-Soyez respectueux et bienveillant. Nous voulons que BananaOps soit un espace accueillant pour tous.
+Be respectful and kind. We want BananaOps to be a welcoming place for everyone.
 
 ### Communication
 
-- **GitHub Discussions** : Questions générales
-- **Issues** : Bugs et features
-- **Pull Requests** : Code reviews
+- **GitHub Discussions**: general questions
+- **Issues**: bugs and features
+- **Pull requests**: code reviews
 
-## Reconnaissance
+## Recognition
 
-Les contributeurs sont listés dans :
+Contributors are listed in:
 - README.md
 - CONTRIBUTORS.md
 - Release notes
 
-## Licence
+## License
 
-En contribuant, vous acceptez que vos contributions soient sous licence du projet.
+By contributing, you agree that your contributions are released under the project's license.
 
-## Questions ?
+## Questions?
 
-N'hésitez pas à :
-- Ouvrir une [Discussion](https://github.com/bananaops/discussions)
+Feel free to open a [Discussion](https://github.com/bananaops/discussions).
 
 ---
 
-Merci de contribuer à rendre le DevOps plus simple ! 🍌🚀
+Thanks for helping make DevOps simpler!
